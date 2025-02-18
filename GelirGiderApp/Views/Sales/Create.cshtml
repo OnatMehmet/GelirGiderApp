@@ -1,0 +1,27 @@
+﻿@model GelirGiderApp.Models.SalesViewModel
+
+<h2>Yeni Satış</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="PatientName">Hasta Adı:</label>
+        <input type="text" class="form-control" id="PatientName" name="PatientName" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ProductId">Ürün Seçin:</label>
+        <select class="form-control" id="ProductId" name="ProductId" required>
+            @foreach (var product in ViewBag.Products)
+            {
+                <option value="@product.Id">@product.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="PaymentAmount">Ödeme Miktarı:</label>
+        <input type="number" class="form-control" id="PaymentAmount" name="PaymentAmount" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Satışı Tamamla</button>
+</form>

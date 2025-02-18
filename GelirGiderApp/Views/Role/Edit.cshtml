@@ -1,0 +1,15 @@
+﻿@model GelirGiderApp.Models.Entities.Role
+
+<h2>Rol Düzenle</h2>
+
+<form method="post">
+    <div>
+        <label for="Name">Rol Adı</label>
+        <input type="text" id="Name" name="Name" value="@Model.Name" required />
+    </div>
+    <div>
+        <label for="Description">Açıklama</label>
+        <input type="text" id="Description" name="Description" value="@Model.Description" />
+    </div>
+    <button type="submit">Kaydet</button>
+</form>

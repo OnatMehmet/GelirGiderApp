@@ -1,0 +1,28 @@
+﻿@model IEnumerable<GelirGiderApp.Models.Entities.Role>
+
+<h2>Rolleri Yönet</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Rol Adı</th>
+            <th>Açıklama</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>@role.Description</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Role", new { id = role.Id })">Düzenle</a> |
+                    <a href="@Url.Action("Delete", "Role", new { id = role.Id })">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Role")">Yeni Rol Ekle</a>
