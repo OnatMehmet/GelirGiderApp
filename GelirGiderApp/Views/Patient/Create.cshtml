@@ -1,43 +1,91 @@
-﻿
-@{
-    ViewData["Title"] = "Create";
+﻿@{
+    ViewData["Title"] = "Yeni Hasta Ekle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @model GelirGiderApp.Models.Entities.Patient
-
-@{
-    ViewData["Title"] = "Yeni Hasta Ekle";
-}
 
 <h4>Hasta Bilgilerini Girin</h4>
 <hr />
 
-<form method="post">
-    <div class="form-group">
-        <label for="Ad">Ad</label>
-        <input type="text" class="form-control" id="Ad" name="Ad" required />
+<!-- Form Başlangıcı -->
+<form method="post" class="needs-validation" novalidate>
+    <div class="row">
+        <!-- Ad Alanı -->
+        <div class="col-md-4 mb-3">
+            <label for="Name" class="form-label">Ad</label>
+            <input type="text" class="form-control" id="Name" name="Name" required />
+            <div class="invalid-feedback">
+                Lütfen adı girin.
+            </div>
+        </div>
+
+        <!-- Telefon Alanı -->
+        <div class="col-md-4 mb-3">
+            <label for="PhoneNumber" class="form-label">Telefon</label>
+            <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" pattern="^\d{10}$" required />
+            <div class="invalid-feedback">
+                Lütfen geçerli bir telefon numarası girin (10 haneli).
+            </div>
+        </div>
+
+        <!-- Email Alanı -->
+        <div class="col-md-4 mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="Email" name="Email" required />
+            <div class="invalid-feedback">
+                Lütfen geçerli bir email adresi girin.
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="Soyad">Soyad</label>
-        <input type="text" class="form-control" id="Soyad" name="Soyad" required />
+
+    <div class="row">
+        <!-- Adres Alanı -->
+        <div class="col-md-4 mb-3">
+            <label for="Address" class="form-label">Adres</label>
+            <input type="text" class="form-control" id="Address" name="Address" required />
+            <div class="invalid-feedback">
+                Lütfen adresi girin.
+            </div>
+        </div>
+
+        <!-- Doğum Tarihi Alanı -->
+        <div class="col-md-4 mb-3">
+            <label for="DogumTarihi" class="form-label">Doğum Tarihi</label>
+            <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required />
+            <div class="invalid-feedback">
+                Lütfen doğum tarihini seçin.
+            </div>
+        </div>
+
+        <!-- Üçüncü Alan (Örnek) -->
+        <div class="col-md-4 mb-3">
+            <label for="ExampleField" class="form-label">Örnek Alan</label>
+            <input type="text" class="form-control" id="ExampleField" name="ExampleField" required />
+            <div class="invalid-feedback">
+                Bu alanı doldurmanız gerekmektedir.
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="Telefon">Telefon</label>
-        <input type="text" class="form-control" id="Telefon" name="Telefon" required />
-    </div>
-    <div class="form-group">
-        <label for="Email">Email</label>
-        <input type="email" class="form-control" id="Email" name="Email" required />
-    </div>
-    <div class="form-group">
-        <label for="Adres">Adres</label>
-        <input type="text" class="form-control" id="Adres" name="Adres" required />
-    </div>
-    <div class="form-group">
-        <label for="DogumTarihi">Doğum Tarihi</label>
-        <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required />
-    </div>
+
+    <!-- Submit Butonu -->
     <button type="submit" class="btn btn-primary mt-3">Ekle</button>
 </form>
 
+<!-- Custom JS Validation -->
+<script>
+    // Bootstrap form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>

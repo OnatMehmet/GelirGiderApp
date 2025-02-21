@@ -1,91 +1,131 @@
 html {
-    font-size: 14px;
+font-size: 14px;
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+html {
+    font-size: 16px;
+}
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-    position: relative;
-    min-height: 100%;
+/* Ensure the entire page takes full height */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #03447b;
 }
 
-body {
-    margin-bottom: 60px;
+/* Make the navbar wider and adjust spacing */
+.navbar {
+    padding: 1rem 2rem;
+    background-color: #03447b;
+    height: 100px;
+    border-radius: 20px;
 }
-/* Sidebar Genel Stilleri */
+
+/* Navbar branding adjustments */
+.navbar-brand {
+font-size: 1.5rem;
+font-weight: bold;
+}
+
+/* Style the navbar text (username) */
+.navbar-text {
+font-size: 1.3rem;
+color: #333;
+}
+
+/* Adjust the spacing of the logout button */
+.navbar .btn {
+font-size: 1rem;
+padding: 0.5rem 1rem;
+margin-left: 1rem;
+}
+
+/* Sidebar için þýk bir yeþil-siyah gradient arka plan */
 .sidebar {
-    background: linear-gradient(to bottom, #2d6a4f, #1b3a2c); /* Yeþil - Siyah karýþýmý */
-    width: 250px;
-    transition: width 0.3s ease-in-out;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
+    /*background: linear-gradient(to bottom right, #1a472a, #333);*/ /* Daha zengin yeþil tonlarý */
+    background-color: #03447b;
+    color: white; /* Beyaz metin rengi */
+    padding-top: 50px;
+    box-shadow: 4px 4px 8px #03447b; /* Sidebar'a hafif gölge ekleme */
+    border-radius: 10px; /* Kenarlarý yuvarlama */
+}
+
+/* Sidebar baðlantýlarý için stil */
+.sidebar .nav-link {
+    font-size: 1.2rem;
+    padding: 15px 25px;
+    color: white;
+  
+}
+/* Alt menü stilini ayarla */
+.sidebar .collapse .nav-link {
+    font-size: 1.2rem;
+    padding-left: 25px;
     color: white;
 }
 
-.sidebar-header {
-    background-color: #1b3a2c; /* Siyah renk baþlýk kýsmý için */
+/* Hover efektiyle arka plan rengini deðiþtirme ve soldan padding ekleme */
+    .sidebar .nav-link:hover {
+        background-color: #03447b; /* Hover efekti için koyu yeþil ton */
+        padding-left: 25px; /* Hover sýrasýnda soldan daha fazla iç boþluk */
+        border-radius: 5px; /* Kenarlarý yuvarlatma */
+    }
+
+/* Sidebar'da alt menü açýlýrken animasyon */
+.sidebar .collapse {
+    transition: max-height 0.4s ease-out; /* Animasyon ile alt menü geçiþi */
+    max-height: 0;
+    overflow: hidden;
+}
+/* Alt menü baðlantýlarýnda hover efekti */
+    .sidebar .collapse .nav-link:hover {
+        background-color: #60c5de; /* Alt menüde koyu yeþil ton */
+    }
+
+/* Alt menü açýldýðýnda */
+.sidebar .collapse.show {
+    max-height: 400px; /* Yüksekliði arttýrarak alt menüyü açma */
 }
 
-.sidebar.collapsed {
-    width: 54px;
+
+
+/* Content container styling */
+.content-container {
+    background-color: #e4dfdf;
+    min-height: 100vh;
+    width:auto;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
 }
 
-/* Menü Linkleri */
-.sidebar .nav-link {
+/* Footer styling */
+footer {
+    background-color: #60c5de;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Make sure the sidebar and content are aligned */
+.row {
     display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    border-radius: 5px;
-    transition: background 0.3s, padding-left 0.3s;
+    flex-wrap: nowrap;
 }
 
-    .sidebar .nav-link i {
-        font-size: 20px;
-        margin-right: 10px;
-        transition: margin-right 0.3s;
+/* Make the footer stay at the bottom */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+    .content-wrapper .content-container {
+        flex: 1;
     }
-
-/* Sidebar Kapandýðýnda Yazýlarý Gizle */
-.sidebar.collapsed .sidebar-text {
-    display: none;
-}
-
-.sidebar.collapsed .nav-link {
-    justify-content: center;
-    padding-left: 0;
-}
-
-    .sidebar.collapsed .nav-link i {
-        margin-right: 0;
-    }
-
-/* Sidebar Üzerine Gelince Açýlma */
-.sidebar.collapsed:hover {
-    width: 240px;
-}
-
-    .sidebar.collapsed:hover .sidebar-text {
-        display: inline;
-    }
-
-    .sidebar.collapsed:hover .nav-link {
-        justify-content: flex-start;
-        padding-left: 15px;
-    }
-
-        .sidebar.collapsed:hover .nav-link i {
-            margin-right: 10px;
-        }
-
-/* Sidebar Baþlýðý Küçük Ekranlarda Gizleme */
-.sidebar.collapsed .sidebar-header h5 {
-    display: none;
-}

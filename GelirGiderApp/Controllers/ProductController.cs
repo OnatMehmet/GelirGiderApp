@@ -1,48 +1,47 @@
-﻿
+﻿using GelirGiderApp.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GelirGiderApp.Models.Entities;
 
 namespace GelirGiderApp.Controllers
 {
-    public class PatientController : Controller
+    public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PatientController(ApplicationDbContext context)
+        public ProductController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Hasta
+        // GET: product
         public async Task<IActionResult> Index()
         {
-            var hastalar = await _context.Patients.ToListAsync();
-            return View(hastalar);
+            var products = await _context.Products.ToListAsync();
+            return View(products);
         }
 
-        // GET: Hasta/Create
+        // GET: product/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Hasta/Create
+        // POST: product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Ad,Soyad,DogumTarihi,Telefon,Email,Adres")] Patient hasta)
+        public async Task<IActionResult> Create([Bind("Id,Name,Cost,SalePrice,ProductTypeId,Description")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(hasta);
+                _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(hasta);
+            return View(product);
 
         }
 
-        // GET: Hasta/Edit/5
+        // GET: product/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -50,20 +49,20 @@ namespace GelirGiderApp.Controllers
                 return NotFound();
             }
 
-            var hasta = await _context.Patients.FindAsync(id);
-            if (hasta == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(hasta);
+            return View(product);
         }
 
-        // POST: Hasta/Edit/5
+        // POST: product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Ad,Soyad,DogumTarihi,Telefon,Email,Adres")] Patient hasta)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Cost,SalePrice,ProductTypeId,Description")] Product product)
         {
-            if (id != hasta.Id)
+            if (id != product.Id)
             {
                 return NotFound();
             }
@@ -72,12 +71,12 @@ namespace GelirGiderApp.Controllers
             {
                 try
                 {
-                    _context.Update(hasta);
+                    _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!HastaExists(hasta.Id))
+                    if (!ProductExists(product.Id))
                     {
                         return NotFound();
                     }
@@ -88,10 +87,10 @@ namespace GelirGiderApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(hasta);
+            return View(product);
         }
 
-        // GET: Hasta/Delete/5
+        // GET: product/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -99,33 +98,33 @@ namespace GelirGiderApp.Controllers
                 return NotFound();
             }
 
-            var hasta = await _context.Patients.FirstOrDefaultAsync(m => m.Id == id);
-            if (hasta == null)
+            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(hasta);
+            return View(product);
         }
 
-        // POST: Hasta/Delete/5
+        // POST: product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var hasta = await _context.Patients.FindAsync(id);
-            if (!HastaExists(hasta.Id))
+            var product = await _context.Products.FindAsync(id);
+            if (!ProductExists(product.Id))
             {
                 return NotFound();
             }
-            _context.Patients.Remove(hasta);
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool HastaExists(Guid id)
+        private bool ProductExists(Guid id)
         {
-            return _context.Patients.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.Id == id);
         }
     }
 }
