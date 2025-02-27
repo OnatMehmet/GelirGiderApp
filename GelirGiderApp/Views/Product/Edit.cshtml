@@ -1,8 +1,166 @@
-﻿
+﻿@model GelirGiderApp.Models.Entities.Product
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Ürün Düzenle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-white text-center">
+                    <h4>Ürün Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Form Başlangıcı -->
+                    <form method="post" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Ürün Adı -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Ürün Adı</label>
+                            <input asp-for="Name" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Lütfen ürün adını girin.
+                            </div>
+                        </div>
+
+                        <!-- Ürün Maliyeti -->
+                        <div class="mb-3">
+                            <label asp-for="Cost" class="form-label">Maliyet</label>
+                            <input asp-for="Cost" type="number" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Lütfen maliyeti girin.
+                            </div>
+                        </div>
+
+                        <!-- Ürün Satış Fiyatı -->
+                        <div class="mb-3">
+                            <label asp-for="SalePrice" class="form-label">Satış Fiyatı</label>
+                            <input asp-for="SalePrice" type="number" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Lütfen satış fiyatını girin.
+                            </div>
+                        </div>
+
+                        <!-- Ürün Tipi -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
+                            <div class="input-group">
+                                <select asp-for="ProductTypeId" class="form-control" required>
+                                    <option value="">Seçiniz...</option>
+                                    @foreach (var type in ViewBag.ProductTypes)
+                                    {
+                                        <option value="@type.Id" selected="@(Model.ProductTypeId == type.Id ? "selected" : null)">
+                                            @type.Name
+                                        </option>
+                                    }
+                                </select>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductTypeModal">
+                                    Yeni Ekle
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
+                        <!-- Açıklama -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Açıklama</label>
+                            <input asp-for="Description"  class="form-control" />
+                            <div class="invalid-feedback">
+                                Lütfen satış fiyatını girin.
+                            </div>
+                        </div>
+                        <!-- Submit Butonları -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Güncelle</button>
+                            <a href="@Url.Action("Index", "Product")" class="btn btn-secondary btn-lg">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yeni Ürün Tipi Ekleme Modalı -->
+<div class="modal fade" id="addProductTypeModal" tabindex="-1" aria-labelledby="addProductTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductTypeModalLabel">Yeni Ürün Tipi Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="newProductType" class="form-label">Ürün Tipi Adı</label>
+                    <input type="text" class="form-control" id="newProductType" />
+                </div>
+                <div class="mb-3">
+                    <label for="newProductTypeDesc" class="form-label">Ürün Tipi Açıklaması</label>
+                    <input type="text" class="form-control" id="newProductTypeDesc" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-success" id="saveProductType">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+
+        document.getElementById("saveProductType").addEventListener("click", function () {
+            var newProductType = document.getElementById("newProductType").value;
+            var newProductTypeDesc = document.getElementById("newProductTypeDesc").value;
+            console.log(newProductTypeDesc);
+            if (newProductType.trim() !== "") {
+                // Yeni ürün tipini AJAX ile backend'e gönder
+                $.ajax({
+                    url: '/ProductType/Create',  // 'Create' action'ına yönlendireceğiz
+                    type: 'POST',
+                    data: { name: newProductType, description: newProductTypeDesc, modal: true },
+                    success: function (response) {
+                        if (response.success) {
+                            // Ürün tipi başarılı şekilde eklendiyse
+                            // Modal'ı kapat
+                            var modal = bootstrap.Modal.getInstance(document.getElementById('addProductTypeModal'));
+                            modal.hide();
+
+                            // Dropdown'ı güncelle
+                            var newOption = new Option(newProductType, response.id);
+                            $('#ProductTypeId').append(newOption);
+                        } else {
+                            alert('Ürün tipi eklenirken bir hata oluştu.');
+                        }
+                    },
+                    error: function () {
+                        alert('Bir hata oluştu, lütfen tekrar deneyin.');
+                    }
+                });
+            } else {
+                alert("Lütfen geçerli bir ürün tipi adı girin.");
+            }
+        });
+    </script>
+}
 

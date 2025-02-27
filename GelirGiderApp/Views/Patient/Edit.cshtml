@@ -1,40 +1,132 @@
-﻿
-@{
-    ViewData["Title"] = "Edit";
+﻿@{
+    ViewData["Title"] = "Hasta Düzenle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @model GelirGiderApp.Models.Entities.Patient
 
-@{
-    ViewData["Title"] = "Hasta Düzenle";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center">
+                    <h4><i class="fas fa-edit"></i> Hasta Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="hastaDuzenleForm">
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Ad Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="form-label">Ad</label>
+                            <input asp-for="Name" class="form-control" required />
+                        </div>
+
+                        <!-- Telefon Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Telefon</label>
+                            <input asp-for="PhoneNumber" class="form-control" required />
+                        </div>
+
+                        <!-- Email Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <!-- Adres Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Address" class="form-label">Adres</label>
+                            <input asp-for="Address" class="form-control"  required/>
+                        </div>
+
+                        <!-- Başlangıç Tarihi -->
+                        <div class="form-group mb-3">
+                            <label asp-for="StartDate" class="form-label">Başlangıç Tarihi</label>
+                            <input asp-for="StartDate" class="form-control" type="date" />
+                        </div>
+                        <!-- Açıklama -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="form-label">Açıklama</label>
+                            <input asp-for="Description" class="form-control"/>
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Güncelle</button>
+                            <a href="@Url.Action("Index", "Patient")" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        // Telefon Kontrol
+        $(document).ready(function () {
+            var phoneExist = false;
+            $("#PhoneNumber").on("blur", function () {
+                var phoneNumber = $(this).val();
+
+                if (phoneNumber.length === 10) { // 10 haneli mi kontrol et
+                    console.log("Telefon kontrol ediliyor..."); // Debug için
+                    $.ajax({
+                        url: '/Patient/IsPhoneExist', // Controller'daki metot
+                        type: 'GET',
+                        data: { phoneNumber: phoneNumber },
+                        success: function (response) {
+                          //  console.log("Cevap:", response); // Konsolda cevabı göster
+                            if (response.exists) {
+                                phoneExist = true;
+                                // 🚀 SweetAlert2 ile Şık Uyarı
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Kayıtlı Telefon!',
+                                    text: 'Bu telefon numarası sistemde zaten kayıtlı. Lütfen farklı bir numara girin!',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'Tamam'
+                                });
+                            } else {
+                                phoneExist = false;
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Hata:", error);
+                        }
+                    });
+                }
+            });
+            // Formun gönderilmesini engelle
+            $("#hastaDuzenleForm").on("submit", function (event) {
+                if (phoneExist) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'Bu telefon numarası zaten kayıtlı! Lütfen farklı bir numara girin.',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        });
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 }
-
-<form method="post">
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="StartDate"></label>
-        <input asp-for="StartDate" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
-</form>
-
-

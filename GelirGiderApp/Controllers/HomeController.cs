@@ -32,9 +32,10 @@ namespace GelirGiderApp.Controllers
                 ViewBag.Username = username;
                 ViewBag.userRole = userRole;
 
-                ViewBag.TotalPatients = _context.Patients.Count();
-                ViewBag.TotalIncome = _context.Payments.Sum(s => s.Amount);
-                ViewBag.TotalExpense = _context.Products.Sum(e => e.Cost);
+                ViewBag.TotalPatients = _context.Patients.Where(x => x.IsActive).Count();
+                ViewBag.TotalProducts = _context.Products.Where(x => x.IsActive).Count();
+                ViewBag.TotalIncome = _context.Payments.Where(x => x.IsActive).Sum(s => s.Amount);
+                ViewBag.TotalExpense = _context.Products.Where(x => x.IsActive).Sum(e => e.Cost);
                 ViewBag.TotalRemainingPayments = 5;//_context.Sales.Sum(s => s.ProductSalePrice - s.AmountPaid);
 
             }

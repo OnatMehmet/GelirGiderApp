@@ -4,11 +4,11 @@
     ViewData["Title"] = "Hastalar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<br />
 <p>
     <a href="@Url.Action("Create", "Patient")" class="btn btn-primary">Yeni Hasta Ekle</a>
 </p>
-<table id="patientsTable" class="table table-bordered table-striped">
+<table id="patientsTable" class="display">
     <thead>
         <tr>
             <th>Ad Soyad</th>
@@ -16,6 +16,7 @@
             <th>Email</th>
             <th>Adres</th>
             <th>Başlama Tarihi</th>
+            <th>Açıklama</th>
             <th>İşlemler</th>
         </tr>
     </thead>
@@ -28,19 +29,19 @@
                 <td>@hasta.Email</td>
                 <td>@hasta.Address</td>
                 <td>@hasta.StartDate.ToShortDateString()</td>
+                <td>@hasta.Description</td>
+
                 <td>
-                    <a href="@Url.Action("Edit", "Patient", new { id = hasta.Id })" class="btn btn-warning">Düzenle</a>
-                    <a href="@Url.Action("Delete", "Patient", new { id = hasta.Id })" class="btn btn-danger">Sil</a>
+                    <a href="@Url.Action("Edit", "Patient", new { id = hasta.Id })" class="btn btn-warning">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <button class="btn btn-danger" onclick="hastaSil('@hasta.Id', '@hasta.Name')"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<!-- DataTables Kütüphanesi -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#patientsTable').DataTable({
@@ -73,5 +74,41 @@
             "ordering": true,
             "info": true
         });
+        // Satır seçme özelliği
+        $('#hastaTable tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
     });
+</script>
+<script>
+    function hastaSil(id, name) {
+        console.log(name);
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: `"${name}" adlı hastayı silmek üzeresiniz. Bu işlem geri alınamaz!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Patient/Delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Silindi!', response.message, 'success').then(() => {
+                                location.reload(); // Sayfayı yenileyerek güncelle
+                            });
+                        } else {
+                            Swal.fire('Hata!', response.message, 'error');
+                        }
+                    }
+                });
+            }
+        });
+    }
 </script>

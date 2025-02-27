@@ -21,6 +21,51 @@ namespace GelirGiderApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("GelirGiderApp.Models.Entities.Note", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsertId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notes");
+                });
+
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Patient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -190,10 +235,7 @@ namespace GelirGiderApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ProductTypeId1")
+                    b.Property<Guid>("ProductTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("SalePrice")
@@ -207,7 +249,7 @@ namespace GelirGiderApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductTypeId1");
+                    b.HasIndex("ProductTypeId");
 
                     b.ToTable("Products");
                 });
@@ -286,26 +328,77 @@ namespace GelirGiderApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fc27e4c8-6d6c-4e6d-b1c3-e40b33ef6e9a"),
+                            Id = new Guid("459ed664-167e-49d9-96bb-464d36fb5899"),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin",
                             UpdatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedDate = new DateTime(2025, 2, 27, 14, 31, 2, 15, DateTimeKind.Local).AddTicks(2274)
                         },
                         new
                         {
-                            Id = new Guid("909bf87d-159e-46ab-9140-18bba83df1d0"),
+                            Id = new Guid("0b15a63e-21dc-4115-a79b-3697ed2be271"),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Doctor",
                             UpdatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedDate = new DateTime(2025, 2, 27, 14, 31, 2, 15, DateTimeKind.Local).AddTicks(2315)
                         });
+                });
+
+            modelBuilder.Entity("GelirGiderApp.Models.Entities.Sales", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("RemainingAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("GelirGiderApp.Models.Entities.User", b =>
@@ -365,6 +458,23 @@ namespace GelirGiderApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("GelirGiderApp.Models.Entities.Note", b =>
+                {
+                    b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
+                        .WithMany("Notes")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GelirGiderApp.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GelirGiderApp.Models.Entities.PatientProduct", b =>
                 {
                     b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
@@ -399,11 +509,30 @@ namespace GelirGiderApp.Migrations
                 {
                     b.HasOne("GelirGiderApp.Models.Entities.ProductType", "ProductType")
                         .WithMany()
-                        .HasForeignKey("ProductTypeId1")
+                        .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductType");
+                });
+
+            modelBuilder.Entity("GelirGiderApp.Models.Entities.Sales", b =>
+                {
+                    b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GelirGiderApp.Models.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("GelirGiderApp.Models.Entities.User", b =>
@@ -419,6 +548,8 @@ namespace GelirGiderApp.Migrations
 
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Patient", b =>
                 {
+                    b.Navigation("Notes");
+
                     b.Navigation("PatientProducts");
                 });
 

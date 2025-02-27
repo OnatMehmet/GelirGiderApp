@@ -1,6 +1,9 @@
 ﻿using GelirGiderApp.Models;
 using GelirGiderApp.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
+using System.Composition;
 
 namespace GelirGiderApp.Controllers
 {
@@ -11,6 +14,60 @@ namespace GelirGiderApp.Controllers
         public SalesController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        // GET: sales
+        public async Task<IActionResult> Index()
+        {
+            var sales = await _context.Sales.ToListAsync();
+            return View(sales);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HastaAra(string term)
+        {
+            var hastalar = await _context.Patients
+                .Where(h => h.Name.Contains(term))
+                .Select(h => h.Name)
+                .Take(10)
+                .ToListAsync();
+            return Json(hastalar);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Id,PaymentAmount,Price,RemainingAmount,PatientId,ProductId")] Sales sales)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var hasta = await _context.Patients.FirstOrDefaultAsync(h => h.Id == sales.PatientId);
+
+                if (hasta == null)
+                {
+                    ModelState.AddModelError("PatientId", "Hasta zorunlu");
+                    return View(sales);
+                }
+                //if (hasta == null)
+                //{
+                //    hasta = new Patient { Name = hasta.Name };
+                //    _context.Patients.Add(hasta);
+                //    await _context.SaveChangesAsync();
+                //}
+
+                var satis = new Sales
+                {
+                    PatientId = sales.Id,
+                    ProductId = sales.ProductId,
+                    Price = sales.Price,
+                    PaymentAmount = sales.PaymentAmount,
+                    RemainingAmount = sales.Price - sales.PaymentAmount
+                };
+
+                _context.Sales.Add(satis);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");//RedirectToAction("SatisDetay", new { id = satis.Id });
+            }
+            return View(sales);
         }
 
         // Yeni satış işlemi için view
@@ -28,9 +85,11 @@ namespace GelirGiderApp.Controllers
             return View();
         }
 
+
+
         // Satış işlemini kaydetme
         [HttpPost]
-        public IActionResult Create(SalesViewModel model)
+        public IActionResult Create1(SalesViewModel model)
         {
             if (ModelState.IsValid)
             {

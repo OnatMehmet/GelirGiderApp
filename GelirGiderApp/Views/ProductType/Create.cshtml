@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Yeni Ürün Tipi Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model GelirGiderApp.Models.Entities.ProductType
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Yeni Ürün Tipi Ekle</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Form Başlangıcı -->
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Ürün Tipi Adı</label>
+                            <input type="text" class="form-control" id="name" name="name" required />
+                            <div class="invalid-feedback">
+                                Lütfen ürün tipi adı girin.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Ürün Tipi Açıklaması</label>
+                            <input type="text" class="form-control" id="description" name="description" />
+                            <div class="invalid-feedback">
+                                Lütfen ürün tipi adı girin.
+                            </div>
+                        </div>
+
+                        <!-- Submit Butonu -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" id="saveProductType" class="btn btn-success btn-lg">Ürün Tipini Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

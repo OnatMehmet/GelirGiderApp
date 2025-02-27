@@ -17,7 +17,7 @@ namespace GelirGiderApp.Controllers
         // GET: Hasta
         public async Task<IActionResult> Index()
         {
-            var hastalar = await _context.Patients.ToListAsync();
+            var hastalar = await _context.Patients.Where(x=>x.IsActive).ToListAsync();
             return View(hastalar);
         }
 
@@ -30,97 +30,88 @@ namespace GelirGiderApp.Controllers
         // POST: Hasta/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Ad,Soyad,DogumTarihi,Telefon,Email,Adres")] Patient hasta)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,PhoneNumber,Address,StartDate,Description")] Patient hasta)
         {
+      
             if (ModelState.IsValid)
-            {
+            {   // Telefon numarasını kontrol et
+                //var existingPatient = _context.Patients.FirstOrDefault(p => p.PhoneNumber == hasta.PhoneNumber);
+
+                //if (existingPatient != null)
+                //{
+                //    // Eğer telefon numarası zaten kayıtlıysa, hata mesajı döndür
+                //    ModelState.AddModelError("PhoneNumber", "Bu telefon numarası zaten kayıtlı!");
+                //    return View(hasta);
+                //}
                 _context.Add(hasta);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Hasta başarıyla eklendi!";
                 return RedirectToAction(nameof(Index));
             }
             return View(hasta);
 
         }
-
-        // GET: Hasta/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public IActionResult IsPhoneExist(string phoneNumber)
         {
-            if (id == null)
+            bool isExist = _context.Patients.Any(p => p.PhoneNumber == phoneNumber);
+            return Json(new { exists = isExist});
+        }
+        [HttpGet]
+        public IActionResult Edit(Guid id)
+        {
+            var patient = _context.Patients.FirstOrDefault(p => p.Id == id);
+            if (patient == null)
             {
                 return NotFound();
             }
 
-            var hasta = await _context.Patients.FindAsync(id);
-            if (hasta == null)
-            {
-                return NotFound();
-            }
-            return View(hasta);
+            return View(patient);
         }
 
-        // POST: Hasta/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Ad,Soyad,DogumTarihi,Telefon,Email,Adres")] Patient hasta)
+        public IActionResult Edit(Patient model)
         {
-            if (id != hasta.Id)
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var patient = _context.Patients.FirstOrDefault(p => p.Id == model.Id);
+            if (patient == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(hasta);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HastaExists(hasta.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(hasta);
+            // Hasta bilgilerini güncelle
+            patient.Name = model.Name;
+            patient.PhoneNumber = model.PhoneNumber;
+            patient.Email = model.Email;
+            patient.Address = model.Address;
+            patient.StartDate = model.StartDate;
+            patient.Description = model.Description;
+
+            _context.SaveChanges();
+
+            TempData["Success"] = "Hasta başarıyla güncellendi!";
+            return RedirectToAction("Index");
         }
 
         // GET: Hasta/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var hasta = await _context.Patients.FirstOrDefaultAsync(m => m.Id == id);
+            var hasta = await _context.Patients.FindAsync(id);
             if (hasta == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Hasta bulunamadı!" });
             }
-
-            return View(hasta);
-        }
-
-        // POST: Hasta/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var hasta = await _context.Patients.FindAsync(id);
-            if (!HastaExists(hasta.Id))
-            {
-                return NotFound();
-            }
-            _context.Patients.Remove(hasta);
+            hasta.IsActive = false;
+            _context.Patients.Update(hasta);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Json(new { success = true, message = "Hasta başarıyla silindi!" });
         }
 
         private bool HastaExists(Guid id)

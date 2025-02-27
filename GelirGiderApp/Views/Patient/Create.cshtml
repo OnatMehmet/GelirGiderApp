@@ -4,88 +4,160 @@
 }
 @model GelirGiderApp.Models.Entities.Patient
 
-<h4>Hasta Bilgilerini Girin</h4>
-<hr />
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Yeni Hasta Ekle</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Form Başlangıcı -->
+                    <form method="post" class="needs-validation" novalidate id="hastaForm">
+                        <div class="row">
+                            <!-- Ad Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Name" class="form-label">Ad</label>
+                                <input type="text" class="form-control" id="Name" name="Name" required />
+                                <div class="invalid-feedback">
+                                    Lütfen adı girin.
+                                </div>
+                            </div>
 
-<!-- Form Başlangıcı -->
-<form method="post" class="needs-validation" novalidate>
-    <div class="row">
-        <!-- Ad Alanı -->
-        <div class="col-md-4 mb-3">
-            <label for="Name" class="form-label">Ad</label>
-            <input type="text" class="form-control" id="Name" name="Name" required />
-            <div class="invalid-feedback">
-                Lütfen adı girin.
-            </div>
-        </div>
+                            <!-- Telefon Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label for="PhoneNumber" class="form-label">Telefon</label>
+                                <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" pattern="^\d{10}$" required />
+                              <div class="invalid-feedback">
+                                    Lütfen geçerli bir telefon numarası girin (10 haneli).
+                                </div>       
+                            </div>
+                        </div>
 
-        <!-- Telefon Alanı -->
-        <div class="col-md-4 mb-3">
-            <label for="PhoneNumber" class="form-label">Telefon</label>
-            <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" pattern="^\d{10}$" required />
-            <div class="invalid-feedback">
-                Lütfen geçerli bir telefon numarası girin (10 haneli).
-            </div>
-        </div>
+                        <div class="row">
+                            <!-- Email Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="Email" name="Email" required />
+                                <div class="invalid-feedback">
+                                    Lütfen geçerli bir email adresi girin.
+                                </div>
+                            </div>
 
-        <!-- Email Alanı -->
-        <div class="col-md-4 mb-3">
-            <label for="Email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="Email" name="Email" required />
-            <div class="invalid-feedback">
-                Lütfen geçerli bir email adresi girin.
+                            <!-- Adres Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Address" class="form-label">Adres</label>
+                                <input type="text" class="form-control" id="Address" name="Address" required />
+                                <div class="invalid-feedback">
+                                    Lütfen adresi girin.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+@*                             <!-- Doğum Tarihi Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label for="DogumTarihi" class="form-label">Doğum Tarihi</label>
+                                <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required />
+                                <div class="invalid-feedback">
+                                    Lütfen doğum tarihini seçin.
+                                </div>
+                            </div> *@
+
+                            <!-- Başlama Tarihi Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label for="StartDate" class="form-label">Başlama Tarihi</label>
+                                <input type="date" class="form-control" id="StartDate" name="StartDate" required />
+                                <div class="invalid-feedback">
+                                    Lütfen doğum tarihini seçin.
+                                </div>
+                            </div>
+                            <!-- Açıklama Alan -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Description" class="form-label">Açıklama</label>
+                                <textarea class="form-control" id="Description" name="Description" rows="2"></textarea>
+                                <div class="invalid-feedback">
+                                    Bu alanı doldurmanız gerekmektedir.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Butonu -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Hasta Ekle</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <!-- Adres Alanı -->
-        <div class="col-md-4 mb-3">
-            <label for="Address" class="form-label">Adres</label>
-            <input type="text" class="form-control" id="Address" name="Address" required />
-            <div class="invalid-feedback">
-                Lütfen adresi girin.
-            </div>
-        </div>
+@section Scripts {
+    <script>
+        // Telefon Kontrol
+        $(document).ready(function () {
+            var phoneExist = false;
+            $("#PhoneNumber").on("blur", function () {
+                var phoneNumber = $(this).val();
 
-        <!-- Doğum Tarihi Alanı -->
-        <div class="col-md-4 mb-3">
-            <label for="DogumTarihi" class="form-label">Doğum Tarihi</label>
-            <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required />
-            <div class="invalid-feedback">
-                Lütfen doğum tarihini seçin.
-            </div>
-        </div>
-
-        <!-- Üçüncü Alan (Örnek) -->
-        <div class="col-md-4 mb-3">
-            <label for="ExampleField" class="form-label">Örnek Alan</label>
-            <input type="text" class="form-control" id="ExampleField" name="ExampleField" required />
-            <div class="invalid-feedback">
-                Bu alanı doldurmanız gerekmektedir.
-            </div>
-        </div>
-    </div>
-
-    <!-- Submit Butonu -->
-    <button type="submit" class="btn btn-primary mt-3">Ekle</button>
-</form>
-
-<!-- Custom JS Validation -->
-<script>
-    // Bootstrap form validation
-    (function () {
-        'use strict'
-        var forms = document.querySelectorAll('.needs-validation')
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
-</script>
+                if (phoneNumber.length === 10) { // 10 haneli mi kontrol et
+                    console.log("Telefon kontrol ediliyor..."); // Debug için
+                    $.ajax({
+                        url: '/Patient/IsPhoneExist', // Controller'daki metot
+                        type: 'GET',
+                        data: { phoneNumber: phoneNumber },
+                        success: function (response) {
+                          //  console.log("Cevap:", response); // Konsolda cevabı göster
+                            if (response.exists) {
+                                phoneExist = true;
+                                // 🚀 SweetAlert2 ile Şık Uyarı
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Kayıtlı Telefon!',
+                                    text: 'Bu telefon numarası sistemde zaten kayıtlı. Lütfen farklı bir numara girin!',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'Tamam'
+                                });
+                            } else {
+                                phoneExist = false;
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Hata:", error);
+                        }
+                    });
+                }
+            });
+            // Formun gönderilmesini engelle
+            $("#hastaForm").on("submit", function (event) {
+                if (phoneExist) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'Bu telefon numarası zaten kayıtlı! Lütfen farklı bir numara girin.',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        });
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

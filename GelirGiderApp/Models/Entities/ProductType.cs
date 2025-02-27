@@ -2,6 +2,7 @@
 {
     public class ProductType : BaseEntity<ProductType>
     {
-        public  required string Name { get; set; }
+        public required string Name { get; set; }
+
     }
 }

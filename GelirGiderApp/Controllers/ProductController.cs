@@ -16,110 +16,104 @@ namespace GelirGiderApp.Controllers
         // GET: product
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = _context.Products.Where(x=>x.IsActive)
+                           .Include(p => p.ProductType)// Ürün tipi ile birlikte çek
+                           .ToList();
             return View(products);
         }
 
         // GET: product/Create
-        public IActionResult Create()
-        {
+        public IActionResult  Create()
+        {// Ürün tiplerini veritabanından çek
+         var productTypes =  _context.ProductTypes.ToList();
+            // View'a veri gönder
+            ViewBag.ProductTypes = productTypes;
             return View();
         }
 
         // POST: product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Cost,SalePrice,ProductTypeId,Description")] Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
+                // Ürün tipi ID boş mu?
+                if (product.ProductTypeId == Guid.Empty)
+                {
+                    ModelState.AddModelError("", "Ürün tipi seçmelisiniz.");
+                    ViewBag.ProductTypes = _context.ProductTypes.ToList(); // Dropdown için tekrar yükle
+                    return View(product);
+                }
                 _context.Add(product);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // Ürünler listesine yönlendirme
             }
             return View(product);
-
         }
-
-        // GET: product/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public IActionResult Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FindAsync(id);
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
+            ViewBag.ProductTypes = _context.ProductTypes.ToList();
             return View(product);
         }
 
-        // POST: product/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Cost,SalePrice,ProductTypeId,Description")] Product product)
+        public IActionResult Edit(Product model)
         {
-            if (id != product.Id)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return View(model);
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(product);
-        }
-
-        // GET: product/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var product = _context.Products.Include(p => p.ProductType).FirstOrDefault(p => p.Id == model.Id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            // Hasta bilgilerini güncelle
+            product.Name = model.Name;
+            product.Cost = model.Cost;
+            product.SalePrice = model.SalePrice;
+            product.ProductTypeId = model.ProductTypeId;
+            //product.ProductType.Name = model.ProductType.Name;
+            product.Description = model.Description;
+
+            //// Eğer modelde yeni bir ProductType adı girilmişse güncelle
+            //if (model.ProductType != null && !string.IsNullOrEmpty(model.ProductType.Name))
+            //{
+            //    var existingProductType = _context.ProductTypes.Find(model.ProductTypeId);
+            //    if (existingProductType != null)
+            //    {
+            //        existingProductType.Name = model.ProductType.Name;
+            //    }
+            //}
+            _context.SaveChanges();
+            TempData["Success"] = "Ürün başarıyla güncellendi!";
+            return RedirectToAction("Index");
         }
 
-        // POST: product/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        // GET: Ürün/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (!ProductExists(product.Id))
+
+            var urun = await _context.Products.FindAsync(id);
+            if (urun == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Hasta bulunamadı!" });
             }
-            _context.Products.Remove(product);
+            urun.IsActive = false;
+            _context.Products.Update(urun);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Json(new { success = true, message = "Ürün başarıyla silindi!" });
         }
 
         private bool ProductExists(Guid id)

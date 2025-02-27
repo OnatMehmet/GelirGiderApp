@@ -1,27 +1,74 @@
-﻿@model GelirGiderApp.Models.SalesViewModel
+﻿@model GelirGiderApp.Models.Entities.Sales
 
-<h2>Yeni Satış</h2>
+@{
+    ViewData["Title"] = "Hasta Satış İşlemi";
+}
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="PatientName">Hasta Adı:</label>
-        <input type="text" class="form-control" id="PatientName" name="PatientName" required />
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Yeni Satış</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label for="hastaAdi" class="form-label">Hasta Adı:</label>
+                            <input type="text" id="hastaAdi" name="hastaAdi" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="uruntId" class="form-label">Ürün:</label>
+                            <select class="form-select" id="uruntId" name="urunId" required>
+                                @foreach (var product in ViewBag.Products)
+                                {
+                                    <option value="@product.Id">@product.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fiyat" class="form-label">Fiyat:</label>
+                            <input type="number" id="fiyat" name="fiyat" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="odenenMiktar" class="form-label">Ödenen Miktar:</label>
+                            <input type="number" id="odenenMiktar" name="odenenMiktar" class="form-control" required />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Satış Yap</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label for="ProductId">Ürün Seçin:</label>
-        <select class="form-control" id="ProductId" name="ProductId" required>
-            @foreach (var product in ViewBag.Products)
-            {
-                <option value="@product.Id">@product.Name</option>
-            }
-        </select>
-    </div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 
-    <div class="form-group">
-        <label for="PaymentAmount">Ödeme Miktarı:</label>
-        <input type="number" class="form-control" id="PaymentAmount" name="PaymentAmount" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Satışı Tamamla</button>
-</form>
+    <script>
+        $(document).ready(function () {
+            $("#hastaAdi").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "@Url.Action("HastaAra", "Sales")",
+                        type: "GET",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength: 2
+            });
+        });
+    </script>
+}

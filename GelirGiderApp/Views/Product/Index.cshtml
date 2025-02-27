@@ -1,47 +1,115 @@
-﻿@using GelirGiderApp.Models.Entities
-@model List<Product>
+﻿@model IEnumerable<GelirGiderApp.Models.Entities.Product>
+
 @{
-    ViewData["Title"] = "Ürün Listesi";
+    ViewData["Title"] = "Ürünler";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
-<div class="container mt-4">
-    <h2>Ürün Listesi</h2>
-
-    <p>
-        <a href="@Url.Action("Create", "Product")" class="btn btn-primary">Yeni Ürün Ekle</a>
-    </p>
-
-    <table class="table table-bordered">
-        <thead>
+<br />
+<p>
+    <a href="@Url.Action("Create", "Product")" class="btn btn-primary">Yeni Ürün Ekle</a>
+</p>
+@* class="table table-bordered table-striped" *@
+<table id="productsTable" class="display" >
+    <thead>
+        <tr>
+            <th>Ürün Adı</th>
+            <th>Fiyat</th>
+            <th>Maliyet</th>  
+            <th>Ürün Tipi</th>
+            <th>Açıklama</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var urun in Model)
+        {
             <tr>
-                <th>Ad</th>
-                <th>Fiyat</th>
-                <th>Maliyet</th>
-                <th>Açıklama</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model)
-            {
-                <tr>
-                    <td>@product.Name</td>
-                    <td>@product.SalePrice ₺</td>
-                    <td>@product.Cost</td>
-                    <td>@product.Description</td>
+                <td>@urun.Name</td>
+                <td>@urun.SalePrice</td>
+                <td>@urun.Cost</td>
+                <td>@urun.ProductType.Name</td>
+                <td>@urun.Description</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" onclick="loadPartial('Edit', @product.Id)">Düzenle</button>
-                        <a href="@Url.Action("Delete", "Product", new { id = product.Id })" class="btn btn-danger btn-sm">Sil</a>
-                    </td>
-                </tr>
+                    <a href="@Url.Action("Edit", "Product", new { id = urun.Id })" class="btn btn-warning">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <button class="btn btn-danger" onclick="ürünSil('@urun.Id', '@urun.Name')"><i class="fa fa-trash"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- DataTables Kütüphanesi -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#productsTable').DataTable({
+            "language": {
+                "decimal": "",
+                "emptyTable": "Tabloda herhangi bir veri yok",
+                "info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
+                "infoEmpty": "Gösterilecek kayıt yok",
+                "infoFiltered": "(_MAX_ toplam kayıttan filtrelendi)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "_MENU_ kayıt göster",
+                "loadingRecords": "Yükleniyor...",
+                "processing": "İşleniyor...",
+                "search": "Ara:",
+                "zeroRecords": "Eşleşen kayıt bulunamadı",
+                "paginate": {
+                    "first": "İlk",
+                    "last": "Son",
+                    "next": "Sonraki",
+                    "previous": "Önceki"
+                },
+                "aria": {
+                    "sortAscending": ": artan sütun sıralamasını etkinleştir",
+                    "sortDescending": ": azalan sütun sıralamasını etkinleştir"
+                }
+            },
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true
+        });
+    });
+</script>
+
+<script>
+    function ürünSil(id, name) {
+        console.log(name);
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: `"${name}" adlı ürünü silmek üzeresiniz. Bu işlem geri alınamaz!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Product/Delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Silindi!', response.message, 'success').then(() => {
+                                location.reload(); // Sayfayı yenileyerek güncelle
+                            });
+                        } else {
+                            Swal.fire('Hata!', response.message, 'error');
+                        }
+                    }
+                });
             }
-        </tbody>
-    </table>
-
-    <div id="contentArea"></div>
-</div>
-
-
+        });
+    }
+</script>
 
 
