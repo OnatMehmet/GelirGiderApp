@@ -1,9 +1,6 @@
-﻿using GelirGiderApp.Models;
-using GelirGiderApp.Models.Entities;
+﻿using GelirGiderApp.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using System.Composition;
 
 namespace GelirGiderApp.Controllers
 {
@@ -19,55 +16,22 @@ namespace GelirGiderApp.Controllers
         // GET: sales
         public async Task<IActionResult> Index()
         {
-            var sales = await _context.Sales.ToListAsync();
+            var sales = await _context.Sales
+                .Where(x=>x.IsActive)
+                .Include(p => p.Patient)
+                .Include(s => s.Product)
+                .ToListAsync();
             return View(sales);
         }
 
         [HttpGet]
-        public async Task<IActionResult> HastaAra(string term)
+        public JsonResult HastaAra(string search)
         {
-            var hastalar = await _context.Patients
-                .Where(h => h.Name.Contains(term))
-                .Select(h => h.Name)
-                .Take(10)
-                .ToListAsync();
-            return Json(hastalar);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,PaymentAmount,Price,RemainingAmount,PatientId,ProductId")] Sales sales)
-        {
-
-            if (ModelState.IsValid)
-            {
-                var hasta = await _context.Patients.FirstOrDefaultAsync(h => h.Id == sales.PatientId);
-
-                if (hasta == null)
-                {
-                    ModelState.AddModelError("PatientId", "Hasta zorunlu");
-                    return View(sales);
-                }
-                //if (hasta == null)
-                //{
-                //    hasta = new Patient { Name = hasta.Name };
-                //    _context.Patients.Add(hasta);
-                //    await _context.SaveChangesAsync();
-                //}
-
-                var satis = new Sales
-                {
-                    PatientId = sales.Id,
-                    ProductId = sales.ProductId,
-                    Price = sales.Price,
-                    PaymentAmount = sales.PaymentAmount,
-                    RemainingAmount = sales.Price - sales.PaymentAmount
-                };
-
-                _context.Sales.Add(satis);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index");//RedirectToAction("SatisDetay", new { id = satis.Id });
-            }
-            return View(sales);
+            var patients = _context.Patients
+                                  .Where(p => p.Name.Contains(search))
+                                  .Select(p => new { p.Id, p.Name })
+                                  .ToList();
+            return Json(patients);
         }
 
         // Yeni satış işlemi için view
@@ -85,47 +49,92 @@ namespace GelirGiderApp.Controllers
             return View();
         }
 
-
-
-        // Satış işlemini kaydetme
         [HttpPost]
-        public IActionResult Create1(SalesViewModel model)
+        public async Task<IActionResult> Create(Sales sales)
         {
             if (ModelState.IsValid)
             {
-                // Yeni hasta kaydı
-                var patient = new Patient
+                var hasta = await _context.Patients.FirstOrDefaultAsync(h => h.Id == sales.PatientId);
+                if (hasta == null)
                 {
-                    Name = model.PatientName,
-                    StartDate = DateTime.Now,
-                };
-                _context.Patients.Add(patient);
-                _context.SaveChanges();
+                    ModelState.AddModelError("PatientId", "Hasta zorunlu");
+                    return View(sales);
+                }
 
-                // Ürün bilgisi ve ödeme kaydı
-                var patientProduct = new PatientProduct
-                {
-                    PatientId = patient.Id,
-                    ProductId = model.ProductId,
-                    StartDate = DateTime.Now
-                };
-                _context.PatientProducts.Add(patientProduct);
-                _context.SaveChanges();
+                sales.CreatedDate = DateTime.UtcNow;
+                sales.RemainingAmount = sales.Price - sales.PaymentAmount;
+                _context.Sales.Add(sales);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");//RedirectToAction("SatisDetay", new { id = satis.Id });
+            }
+            return View(sales);
+        }
 
-                // Ödeme kaydı
-                var payment = new Payment
-                {
-                    PatientProductId = patientProduct.Id,
-                    Amount = model.PaymentAmount,
-                    PaymentDate = DateTime.Now
-                };
-                _context.Payments.Add(payment);
-                _context.SaveChanges();
+        public IActionResult Edit(Guid id)
+        {
+            var sale = _context.Sales
+          .Include(s => s.Patient)
+          .Include(s => s.Product)
+          .FirstOrDefault(s => s.Id == id);
 
-                return RedirectToAction("Index", "Home");  // Satış tamamlandıktan sonra yönlendirme
+            if (sale == null)
+            {
+                return NotFound();
             }
 
-            return View(model);  // Hata durumunda formu yeniden göster
+            ViewBag.Patients = _context.Patients.ToList();
+            ViewBag.Products = _context.Products.ToList();
+
+            return View(sale);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Sales model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var sales = _context.Sales.Include(p => p.Patient).FirstOrDefault(p => p.Id == model.Id);
+            if (sales != null)
+            {   // Satış bilgilerini güncelle
+                sales.PatientId = model.PatientId;
+                sales.ProductId = model.ProductId;
+                sales.Price = model.Price;
+                sales.Description = model.Description;
+                _context.SaveChanges();
+                TempData["Success"] = "Satış İşlemi başarıyla güncellendi!";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Patients = _context.Patients.ToList();
+            ViewBag.Products = _context.Products.ToList();
+            return View(model);
+
+        }
+
+        // GET: Ürün/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+
+            var satis = await _context.Sales.FindAsync(id);
+            if (satis == null)
+            {
+                return Json(new { success = false, message = "Satış bulunamadı!" });
+            }
+            satis.IsActive = false;
+            _context.Sales.Update(satis);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Satış işlemi başarıyla silindi!" });
+        }
+
+        [HttpGet]
+        public JsonResult GetPrice(Guid id)
+        {
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            return Json(product?.SalePrice ?? 0);
         }
     }
 

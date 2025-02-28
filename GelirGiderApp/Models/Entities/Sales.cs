@@ -5,7 +5,7 @@
 
         public decimal PaymentAmount { get; set; }  // Ödeme miktarı
         public decimal Price { get; set; }  // Ödeme miktarı
-        public decimal RemainingAmount { get; set; }  // Ödeme miktarı
+        public decimal RemainingAmount { get; set; }  // kalan miktar
         public Guid PatientId { get; set; }
 
         public Guid ProductId { get; set; }

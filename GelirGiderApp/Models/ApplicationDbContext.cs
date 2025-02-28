@@ -11,8 +11,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductType> ProductTypes { get; set; }
     public DbSet<Patient> Patients { get; set; }
-    public DbSet<PatientProduct> PatientProducts { get; set; }
-    public DbSet<Payment> Payments { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Sales> Sales { get; set; }

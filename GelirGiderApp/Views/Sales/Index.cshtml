@@ -1,51 +1,23 @@
-﻿@* @model IEnumerable<GelirGiderApp.Models.Entities.Sales>
-
-<h2>Satışları Yönet</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Hasta Adı</th>
-            <th>Açıklama</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var sales in Model)
-        {
-            <tr>
-                <td>@sales.Patient.Name</td>
-                <td>@sales.Description</td>
-                <td>
-                    <a href="@Url.Action("Edit", "Role", new { id = sales.Id })">Düzenle</a> |
-                    <a href="@Url.Action("Delete", "Role", new { id = sales.Id })">Sil</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<a href="@Url.Action("Create", "Sales")">Yeni Satış Ekle</a>
- *@
-
- @model IEnumerable<GelirGiderApp.Models.Entities.Sales>
+﻿@model IEnumerable<GelirGiderApp.Models.Entities.Sales>
 
 @{
     ViewData["Title"] = "Satışlar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<br />
 <p>
     <a href="@Url.Action("Create", "Sales")" class="btn btn-primary">Yeni Satış Ekle</a>
 </p>
-<table id="salesTable" class="table table-bordered table-striped">
+<table id="salesTable" class="display">
     <thead>
         <tr>
             <th>Hasta Ad Soyad</th>
-            <th>Açıklama</th>
+            <th>Ürün</th>
+            <th>Başlama Tarihi</th>
+            <th>Satış Fiyatı</th>
             <th>Ödenen Miktar</th>
             <th>Kalan Miktar</th>
-            <th>Başlama Tarihi</th>
+            <th>Açıklama</th>
             <th>İşlemler</th>
         </tr>
     </thead>
@@ -54,14 +26,17 @@
         {
             <tr>
                 <td>@satis.Patient.Name</td>
-                <td>@satis.Description</td>
+                <td>@satis.Product.Name</td>
+                <td>@satis.Patient.StartDate.ToShortDateString()</td>
+                <td>@satis.Price</td>
                 <td>@satis.PaymentAmount</td>
                 <td>@satis.RemainingAmount</td>
-                <td>@satis.Patient.StartDate.ToShortDateString()</td>
+                <td>@satis.Description</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Patient", new { id = satis.Id })" class="btn btn-warning">Düzenle</a>
-                    <a href="@Url.Action("Delete", "Patient", new { id = satis.Id })" class="btn btn-danger">Sil</a>
+                    <a href="@Url.Action("Edit", "Sales", new { id = satis.Id })" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                    <button class="btn btn-danger" onclick="satisSil('@satis.Id', '@satis.Patient.Name')"><i class="fa fa-trash"></i></button>
                 </td>
+ 
             </tr>
         }
     </tbody>
@@ -104,4 +79,35 @@
             "info": true
         });
     });
+</script>
+<script>
+    function satisSil(id, name) {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: `"${name}" adlı Hastaya ait Satış işlemimi silmek üzeresiniz. Bu işlem geri alınamaz!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Sales/Delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Silindi!', response.message, 'success').then(() => {
+                                location.reload(); // Sayfayı yenileyerek güncelle
+                            });
+                        } else {
+                            Swal.fire('Hata!', response.message, 'error');
+                        }
+                    }
+                });
+            }
+        });
+    }
 </script>

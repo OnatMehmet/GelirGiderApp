@@ -6,40 +6,46 @@
 
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white text-center">
-                    <h4>Yeni Satış</h4>
+                    <h4>Hasta Satış İşlemi</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Create" method="post">
+                    <form method="post" asp-action="Create" asp-controller="Sales">
                         <div class="mb-3">
-                            <label for="hastaAdi" class="form-label">Hasta Adı:</label>
-                            <input type="text" id="hastaAdi" name="hastaAdi" class="form-control" required />
+                            <label for="PatientName" class="form-label">Hasta Adı</label>
+                            <input type="text" class="form-control" id="PatientName" name="PatientName" required autocomplete="off" />
+                            <input type="hidden" id="PatientId" name="PatientId"  />
                         </div>
 
                         <div class="mb-3">
-                            <label for="uruntId" class="form-label">Ürün:</label>
-                            <select class="form-select" id="uruntId" name="urunId" required>
+                            <label for="ProductId" class="form-label">Ürün</label>
+                            <select id="ProductId" name="ProductId" class="form-select" required>
+                                <option value="">Ürün Seçin...</option>
                                 @foreach (var product in ViewBag.Products)
                                 {
-                                    <option value="@product.Id">@product.Name</option>
+                                    <option value="@product.Id" data-price="@product.SalePrice">@product.Name</option>
                                 }
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="fiyat" class="form-label">Fiyat:</label>
-                            <input type="number" id="fiyat" name="fiyat" class="form-control" required />
+                            <label for="Price" class="form-label">Fiyat</label>
+                            <input type="number" class="form-control" id="Price" name="Price" required />
                         </div>
 
                         <div class="mb-3">
-                            <label for="odenenMiktar" class="form-label">Ödenen Miktar:</label>
-                            <input type="number" id="odenenMiktar" name="odenenMiktar" class="form-control" required />
+                            <label for="PaymentAmount" class="form-label">Ödenen Miktar</label>
+                            <input type="number" class="form-control" id="PaymentAmount" name="PaymentAmount" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Açıklama</label>
+                            <input type="text" class="form-control" id="Description" name="Description" />
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">Satış Yap</button>
+                            <button type="submit" class="btn btn-success btn-lg">Satışı Tamamla</button>
                         </div>
                     </form>
                 </div>
@@ -54,20 +60,42 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 
     <script>
+
         $(document).ready(function () {
-            $("#hastaAdi").autocomplete({
+
+            $("#PatientName").autocomplete({
                 source: function (request, response) {
                     $.ajax({
                         url: "@Url.Action("HastaAra", "Sales")",
                         type: "GET",
                         dataType: "json",
-                        data: { term: request.term },
+                        data: { search: request.term },
                         success: function (data) {
-                            response(data);
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.name,
+                                    id: item.id
+                                };
+                            }));
+                            console.log(data);
                         }
                     });
                 },
-                minLength: 2
+                minLength:2,
+                select: function (event, ui) {
+                    $("#PatientName").val(ui.item.label); // Seçilen ismi göster
+                    $("#PatientId").val(ui.item.id); // ID'yi gizli inputa kaydet
+                    console.log("Seçilen Hasta ID:", ui.item.id);
+                    return false;
+                }
+            });
+
+            // Ürün seçildiğinde fiyat bilgisini otomatik doldur
+            $("#ProductId").change(function () {
+                var selectedPrice = $("#ProductId option:selected").data("price");
+                console.log(selectedPrice);
+                $("#Price").val(parseInt(selectedPrice));
             });
         });
     </script>

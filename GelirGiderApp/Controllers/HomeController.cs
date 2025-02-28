@@ -34,9 +34,10 @@ namespace GelirGiderApp.Controllers
 
                 ViewBag.TotalPatients = _context.Patients.Where(x => x.IsActive).Count();
                 ViewBag.TotalProducts = _context.Products.Where(x => x.IsActive).Count();
-                ViewBag.TotalIncome = _context.Payments.Where(x => x.IsActive).Sum(s => s.Amount);
-                ViewBag.TotalExpense = _context.Products.Where(x => x.IsActive).Sum(e => e.Cost);
-                ViewBag.TotalRemainingPayments = 5;//_context.Sales.Sum(s => s.ProductSalePrice - s.AmountPaid);
+                ViewBag.TotalIncome = _context.Sales.Where(x => x.IsActive).Sum(s => s.PaymentAmount);
+                ViewBag.TotalExpense = _context.Products.Where(x => x.IsActive).Sum(e => e.Cost);//maliyet
+                ViewBag.TotalSales = _context.Sales.Where(x => x.IsActive).Count();
+                ViewBag.TotalRemainingPayments =_context.Sales.Where(x=>x.IsActive).Sum(s => s.Price - s.PaymentAmount);
 
             }
             else

@@ -29,10 +29,8 @@
                 <td>@urun.Cost</td>
                 <td>@urun.ProductType.Name</td>
                 <td>@urun.Description</td>
-                    <td>
-                    <a href="@Url.Action("Edit", "Product", new { id = urun.Id })" class="btn btn-warning">
-                        <i class="fa fa-edit"></i>
-                    </a>
+                <td>
+                    <a href="@Url.Action("Edit", "Product", new { id = urun.Id })" class="btn btn-warning"><i class="fa fa-edit"></i></a>
                     <button class="btn btn-danger" onclick="ürünSil('@urun.Id', '@urun.Name')"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>

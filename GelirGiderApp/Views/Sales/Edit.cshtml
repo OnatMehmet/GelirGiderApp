@@ -1,0 +1,122 @@
+﻿@model GelirGiderApp.Models.Entities.Sales
+
+@{
+    ViewData["Title"] = "Satış Güncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-white text-center">
+                    <h4>Ürün Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Form Başlangıcı -->
+                    <form method="post" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="Id" />
+                        <!-- Hasta -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
+                            <div class="input-group">
+                                <select asp-for="PatientId" class="form-control" required>
+                                    <option value="">Seçiniz...</option>
+                                    @foreach (var type in ViewBag.Patients)
+                                    {
+                                        <option value="@type.Id" selected="@(Model.PatientId == type.Id ? "selected" : null)">
+                                            @type.Name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
+
+                        <!-- Ürün -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
+                            <div class="input-group">
+                                <select asp-for="ProductId" class="form-control" required>
+                                    <option value="">Seçiniz...</option>
+                                    @foreach (var type in ViewBag.Products)
+                                    {
+                                        <option value="@type.Id" selected="@(Model.ProductId == type.Id ? "selected" : null)">
+                                            @type.Name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
+                        <!-- Ürün Satış Fiyatı -->
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label">Satış Fiyatı</label>
+                            <input asp-for="Price" type="number" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Lütfen satış fiyatını girin.
+                            </div>
+                        </div>
+                        <!-- Ödenen Miktar -->
+                        <div class="mb-3">
+                            <label asp-for="PaymentAmount" class="form-label">Ödenen Miktar</label>
+                            <input asp-for="PaymentAmount" type="number" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Lütfen maliyeti girin.
+                            </div>
+                        </div>
+                        <!-- Açıklama -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Açıklama</label>
+                            <input asp-for="Description"  class="form-control" />
+                            <div class="invalid-feedback">
+                                Lütfen satış fiyatını girin.
+                            </div>
+                        </div>
+                        <!-- Submit Butonları -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Güncelle</button>
+                            <a href="@Url.Action("Index", "Sales")" class="btn btn-secondary btn-lg">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
+
+        $(document).ready(function () {
+            $("#ProductId").change(function () {
+                var productId = $(this).val();
+                if (productId) {
+                    $.get("/Sales/GetPrice/" + productId, function (data) {
+                        $("#Price").val(data);
+                    });
+                }
+            });
+        });
+    </script>
+}
+
