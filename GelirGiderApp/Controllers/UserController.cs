@@ -32,6 +32,8 @@ namespace GelirGiderApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                //user.CreatedBy = user.Id;
+                user.CreatedDate = DateTime.UtcNow;
                 _context.Users.Add(user);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -54,12 +56,30 @@ namespace GelirGiderApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                //user.UpdatedBy = user.Id;
                 _context.Users.Update(user);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             ViewBag.Roles = _context.Roles.ToList();
             return View(user);
+        }
+
+        // GET: user/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Kullanıcı bulunamadı!" });
+            }
+            user.IsActive = false;
+            user.IsDeleted = true;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Kullanıcı Silme işlemi başarıyla silindi!" });
         }
     }
 

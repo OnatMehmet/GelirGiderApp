@@ -85,7 +85,7 @@
                     </div>
                 </li>
 
-                <!-- Satışlar -->
+                <!-- Satış İşlemleri -->
                 <li class="nav-item">
                     <a class="nav-link" href="#salesSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="salesSubmenu">
                         <i class="bi bi-currency-dollar"></i> Satış İşlemleri <i class="bi bi-chevron-down ms-auto"></i>
@@ -100,6 +100,37 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="@Url.Action("Index", "Sales")">
                                     <i class="bi bi-list"></i> Satış Listesi
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Kullanıcı İşlemleri -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#usersSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="usersSubmenu">
+                        <i class="bi bi-person-plus"></i> Kullanıcı İşlemleri <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <div class="collapse" id="usersSubmenu">
+                        <ul class="nav flex-column px-2">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "User")">
+                                    <i class="bi bi-plus-circle"></i> Yeni Kullanıcı Ekle
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "User")">
+                                    <i class="bi bi-list"></i> Kullanıcı Listesi
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "Role")">
+                                    <i class="fa-brands fa-critical-role"></i>Yeni Rol Ekle
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Role")">
+                                    <i class="bi bi-list"></i> Rol Listesi
                                 </a>
                             </li>
                         </ul>

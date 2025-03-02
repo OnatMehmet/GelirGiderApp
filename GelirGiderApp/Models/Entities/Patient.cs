@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class Patient :BaseEntity<Patient>
+    public class Patient :BaseEntity<Guid>
     {
         public required string Name { get; set; }
         //public string FullName => FirstName + " " + LastName;

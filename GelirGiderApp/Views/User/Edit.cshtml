@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model GelirGiderApp.Models.Entities.User
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center">
+                    <h4><i class="fas fa-edit"></i> Kullanıcı Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Ad Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="FirstName" class="form-label">Ad</label>
+                            <input asp-for="FirstName" class="form-control" required />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="LastName" class="form-label">Soyad</label>
+                            <input asp-for="LastName" class="form-control" required />
+                        </div>
+                        <!-- Email Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <!-- Adres Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Username" class="form-label">Kullanıcı Adı</label>
+                            <input asp-for="Username" class="form-control" required />
+                        </div>
+
+                        <!-- Parola -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Password" class="form-label">Parola</label>
+                            <input asp-for="Password" class="form-control"  required />
+                        </div>
+
+                        <!-- Rol -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Kullanıcı Rolü</label>
+                            <div class="input-group">
+                                <select asp-for="RoleId" class="form-control" required>
+                                    <option value="">Seçiniz...</option>
+                                    @foreach (var type in ViewBag.Roles)
+                                    {
+                                        <option value="@type.Id" selected="@(Model.RoleId == type.Id ? "selected" : null)">
+                                            @type.Name
+                                        </option>
+                                    }
+                                </select>
+@*                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductTypeModal">
+                                    Yeni Ekle
+                                </button> *@
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
+                        <!-- Açıklama -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="form-label">Açıklama</label>
+                            <input asp-for="Description" class="form-control" />
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Güncelle</button>
+                            <a href="@Url.Action("Index", "User")" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

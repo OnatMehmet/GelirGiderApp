@@ -1,15 +1,61 @@
-﻿@model GelirGiderApp.Models.Entities.Role
+﻿@{
+    ViewData["Title"] = "Rol Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<h2>Rol Düzenle</h2>
+@model GelirGiderApp.Models.Entities.Role
 
-<form method="post">
-    <div>
-        <label for="Name">Rol Adı</label>
-        <input type="text" id="Name" name="Name" value="@Model.Name" required />
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center">
+                    <h4><i class="fas fa-edit"></i> Rol Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Ad Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="form-label">Ad</label>
+                            <input asp-for="Name" class="form-control" required />
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="form-label">Açıklama</label>
+                            <input asp-for="Description" class="form-control" />
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Güncelle</button>
+                            <a href="@Url.Action("Index", "Role")" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <label for="Description">Açıklama</label>
-        <input type="text" id="Description" name="Description" value="@Model.Description" />
-    </div>
-    <button type="submit">Kaydet</button>
-</form>
+</div>
+@section Scripts {
+    <script>
+
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

@@ -108,6 +108,7 @@ namespace GelirGiderApp.Controllers
                 return Json(new { success = false, message = "Hasta bulunamadı!" });
             }
             hasta.IsActive = false;
+            hasta.IsDeleted = true;
             _context.Patients.Update(hasta);
             await _context.SaveChangesAsync();
 

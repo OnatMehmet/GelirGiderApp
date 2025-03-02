@@ -13,6 +13,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Cookie'nin gerekli olduðunu belirtiyoruz
 });
 
+// IHttpContextAccessor servisinin eklenmesi
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

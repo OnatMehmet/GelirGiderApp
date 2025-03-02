@@ -1,32 +1,40 @@
-﻿@model IEnumerable<GelirGiderApp.Models.Entities.Role>
+﻿@model IEnumerable<GelirGiderApp.Models.Entities.User>
+
 @{
-    ViewData["Title"] = "Rol Listesi";
+    ViewData["Title"] = "Kullanıcılar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Rolleri Yönet</h2>
 <br />
 <p>
-    <a href="@Url.Action("Create", "Role")" class="btn btn-primary">Yeni Rol Ekle</a>
+    <a href="@Url.Action("Create", "User")" class="btn btn-primary">Yeni Kullanıcı Ekle</a>
 </p>
-<table id="rolesTable" class="display">
+<table id="usersTable" class="display">
     <thead>
         <tr>
+            <th>Kullanıcı Adı Soyadı</th>
             <th>Rol</th>
+            <th>Email</th>
+            <th>Kullanıcı Adı</th>
+            <th>Şifre</th>
             <th>Kayıt Tarihi</th>
             <th>Açıklama</th>
             <th>İşlemler</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var role in Model)
+        @foreach (var user in Model)
         {
             <tr>
-                <td>@role.Name</td>
-                <td>@role.CreatedDate.ToShortDateString()</td>
-                <td>@role.Description</td>
+                <td>@user.FirstName</td>
+                <td>@user.Role.Name</td>
+                <td>@user.Email</td>
+                <td>@user.Username</td>
+                <td>@user.Password</td>
+                <td>@user.CreatedDate.ToShortDateString()</td>
+                <td>@user.Description</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Role", new { id = role.Id })" class="btn btn-warning"><i class="fa fa-edit"></i></a>
-                    <button class="btn btn-danger" onclick="rolesSil('@role.Id', '@role.Name')"><i class="fa fa-trash"></i></button>
+                    <a href="@Url.Action("Edit", "User", new { id = user.Id })" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                    <button class="btn btn-danger" onclick="userSil('@user.Id', '@user.Username')"><i class="fa fa-trash"></i></button>
                 </td>
 
             </tr>
@@ -40,7 +48,7 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#rolesTable').DataTable({
+        $('#usersTable').DataTable({
             "language": {
                 "decimal": "",
                 "emptyTable": "Tabloda herhangi bir veri yok",
@@ -73,10 +81,10 @@
     });
 </script>
 <script>
-    function rolesSil(id, name) {
+    function userSil(id, name) {
         Swal.fire({
             title: 'Emin misiniz?',
-            text: `"${name}" adlı rolü silmek üzeresiniz. Bu işlem geri alınamaz!`,
+            text: `"${name}" adlı kullanıcıyı silmek üzeresiniz. Bu işlem geri alınamaz!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -86,7 +94,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/Role/Delete',
+                    url: '/User/Delete',
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {

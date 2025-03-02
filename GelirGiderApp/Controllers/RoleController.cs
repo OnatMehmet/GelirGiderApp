@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GelirGiderApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   // [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -32,6 +32,7 @@ namespace GelirGiderApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                role.CreatedDate = DateTime.UtcNow;
                 _context.Roles.Add(role);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -64,7 +65,11 @@ namespace GelirGiderApp.Controllers
         {
             var role = _context.Roles.FirstOrDefault(r => r.Id == id);
             if (role == null) return NotFound();
-            _context.Roles.Remove(role);
+
+            role.IsDeleted = true;
+            role.IsActive = false;
+            _context.Roles.Update(role);
+            //_context.Roles.Remove(role);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }

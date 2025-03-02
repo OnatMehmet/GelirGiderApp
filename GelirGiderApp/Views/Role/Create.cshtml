@@ -1,15 +1,60 @@
-﻿@model GelirGiderApp.Models.Entities.Role
+﻿@{
+    ViewData["Title"] = "Yeni Rol Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model GelirGiderApp.Models.Entities.Role
 
-<h2>Yeni Rol Ekle</h2>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Yeni Rol Ekle</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Form Başlangıcı -->
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Rol Adı</label>
+                            <input type="text" class="form-control" id="Name" name="Name" required />
+                            <div class="invalid-feedback">
+                                Lütfen ürün tipi adı girin.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Açıklama</label>
+                            <input type="text" class="form-control" id="Description" name="Description" />
+                            <div class="invalid-feedback">
+                                Lütfen ürün tipi adı girin.
+                            </div>
+                        </div>
 
-<form method="post">
-    <div>
-        <label for="Name">Rol Adı</label>
-        <input type="text" id="Name" name="Name" required />
+                        <!-- Submit Butonu -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" id="saveProductType" class="btn btn-success btn-lg">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <label for="Description">Açıklama</label>
-        <input type="text" id="Description" name="Description" />
-    </div>
-    <button type="submit">Ekle</button>
-</form>
+</div>
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

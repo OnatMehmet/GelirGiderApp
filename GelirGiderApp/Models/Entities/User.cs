@@ -2,7 +2,7 @@
 
 namespace GelirGiderApp.Models.Entities
 {
-    public class User : BaseEntity<User>
+    public class User : BaseEntity<Guid>
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty ;
