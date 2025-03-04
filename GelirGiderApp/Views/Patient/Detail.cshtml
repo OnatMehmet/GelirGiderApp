@@ -53,7 +53,6 @@
         .profile-info i {
             color: #28a745;
             font-size: 1.2rem;
-          
         }
 
     /* Nav Tab Tasarımı */
@@ -77,8 +76,8 @@
             }
 
             .nav-tabs .nav-link:hover {
-                background-color: #f1c1c1;
-                border-color: #aaa;
+                background-color: #f1f1f1;
+                border-color: #ccc;
             }
 
             .nav-tabs .nav-link i {
@@ -89,7 +88,7 @@
             .nav-tabs .nav-link.active i {
                 color: white;
             }
- 
+
 
     .list-group-item {
         display: flex;
@@ -102,6 +101,19 @@
     }
 
         .btn-danger:hover, .btn-success:hover, .btn-primary:hover {
+            transform: scale(1.05);
+        }
+    /* Yeni Tanı Formunun açılıp kapanması için animasyon */
+    #diagnosisFormContainer {
+        display: none;
+        transition: all 0.3s ease;
+    }
+
+    #toggleDiagnosisFormButton {
+        transition: transform 0.3s ease;
+    }
+
+        #toggleDiagnosisFormButton:hover {
             transform: scale(1.05);
         }
 </style>
@@ -125,37 +137,37 @@
 
         <div class="card-body">
             <!-- TAB MENÜSÜ -->
-    <ul class="nav nav-tabs" id="patientTab" role="tablist">
-    <li class="nav-item">
-        <button class="nav-link" data-bs-target="#info" data-bs-toggle="tab">
-            <i class="bi bi-info-circle me-2"></i> Hasta Bilgileri
-        </button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-target="#notes" data-bs-toggle="tab">
-            <i class="bi bi-file-earmark-text me-2"></i> Notlar
-        </button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-target="#sales" data-bs-toggle="tab">
-            <i class="bi bi-cart-check me-2"></i> Satış & Tahsilat
-        </button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-target="#files" data-bs-toggle="tab">
-            <i class="bi bi-folder me-2"></i> Dosya & Fotoğraf
-        </button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-target="#diagnosis" data-bs-toggle="tab">
-            <i class="bi bi-heart-pulse me-2"></i> Tanılar
-        </button>
-    </li>
-</ul>
-
+            <ul class="nav nav-tabs" id="patientTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#info" data-bs-toggle="tab">
+                        <i class="bi bi-info-circle me-2"></i> Hasta Bilgileri
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#notes" data-bs-toggle="tab">
+                        <i class="bi bi-file-earmark-text me-2"></i> Notlar
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#sales" data-bs-toggle="tab">
+                        <i class="bi bi-cart-check me-2"></i> Satış & Tahsilat
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#files" data-bs-toggle="tab">
+                        <i class="bi bi-folder me-2"></i> Dosya & Fotoğraf
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#diagnosis" data-bs-toggle="tab">
+                        <i class="bi bi-heart-pulse me-2"></i> Tanılar
+                    </button>
+                </li>
+            </ul>
             <div class="tab-content mt-3">
                 <!-- Hasta Bilgileri -->
                 <div class="tab-pane fade" id="info">
+                    <h4>Kişisel Bilgiler</h4>
                     <table class="table">
                         <tr><th>Ad Soyad:</th><td>@Model.Name</td></tr>
                         <tr><th>Telefon:</th><td>@Model.PhoneNumber</td></tr>
@@ -167,6 +179,7 @@
 
                 <!-- Notlar -->
                 <div class="tab-pane fade" id="notes">
+                    <h4> Notlar</h4>
                     <ul class="list-group">
                         @foreach (var note in Model.Notes)
                         {
@@ -186,36 +199,96 @@
 
                 <!-- Satışlar -->
                 <div class="tab-pane fade" id="sales">
+                    <h5> Satışlar</h5>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Tarih</th>
+                                <th>Satış Tarih</th>
+                                <th>Ürün Kodu</th>
                                 <th>Ürün</th>
                                 <th>Ürün Tipi</th>
                                 <th>Satış Fiyatı</th>
                                 <th>Ödenen Tutar</th>
                                 <th>Kalan Tutar</th>
+                                <th>İşlem</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var sales in Model.Sales)
                             {
                                 <tr>
-                                    <td>@sales.Product.CreatedDate.ToShortDateString()</td>
+                                    <td>@sales.CreatedDate.ToShortDateString()</td>
+                                    <td>@sales.Product.Code</td>
                                     <td>@sales.Product.Name</td>
                                     <td>@sales.Product.ProductType.Name</td>
                                     <td>@sales.Price ₺</td>
                                     <td>@sales.PaymentAmount ₺</td>
                                     <td>@sales.RemainingAmount ₺</td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal-@sales.Id">
+                                            <i class="bi bi-bag-fill"></i> Ödeme Yap
+                                        </button>
+                                        @*            <form method="post" id="paymentForm">
+                                    <input type="hidden" name="PatientId" value="@Model.Id" />
+                                    <input type="hidden" name="salesId" value="@sales.Id" />
+                                    <input type="number" class="form-control mt-3" name="Amount" placeholder="Ödeme Miktarı" required />
+                                    <button type="submit" class="btn btn-primary mt-2">Yeni Ödeme Yap</button>
+                                    </form> *@
+                                    </td>
                                 </tr>
+
                             }
+
                         </tbody>
                     </table>
-                    <form method="post" id="paymentForm">
-                        <input type="hidden" name="PatientId" value="@Model.Id" />
-                        <input type="number" class="form-control mt-3" name="Amount" placeholder="Ödeme Miktarı" required />
-                        <button type="submit" class="btn btn-primary mt-2">Yeni Ödeme Yap</button>
-                    </form>
+                    <!-- Ödemeler Listesi -->
+                    <h5>Ödemeler</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Ürün Kodu</th>
+                                <th>Ürün</th>
+                                <th>Ödeme Miktarı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @foreach (var payment in Model.Payments)
+                                {
+                                <tr>
+                                    <td>@payment.PaymentDate.ToShortDateString()</td>
+                                    <td>@payment.Sales.Product.Code</td>
+                                    <td>@payment.Sales.Product.Name</td>
+                                    <td>@payment.Amount ₺</td>
+                                </tr>
+                                }
+                        </tbody>
+                    </table>
+                    <!-- Modal -->
+                    @foreach (var sales in Model.Sales)
+                    {
+                        <div class="modal fade" id="paymentModal-@sales.Id" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="paymentModalLabel">Yeni Ödeme</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" id="paymentForm">
+                                            <input type="hidden" name="salesId" value="@sales.Id" />
+                                            <input type="hidden" name="patientId" value="@Model.Id" />
+                                            <div class="mb-3">
+                                                <label for="paymentAmount" class="form-label">Ödeme Miktarı (₺)</label>
+                                                <input type="number" class="form-control" id="paymentAmount" name="Amount" placeholder="Ödeme Miktarı" required />
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Ödeme Yap</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
 
                 <!-- Dosyalar -->
@@ -237,12 +310,39 @@
 
                 <!-- Tanılar -->
                 <div class="tab-pane fade" id="diagnosis" role="tabpanel">
+                    <h4>Tanılar</h4>
+
+                    <!-- Tanılar Listesi -->
                     <ul class="list-group">
                         @foreach (var diagnosis in Model.Diagnoses)
                         {
-                            <li class="list-group-item">@diagnosis.Description - @diagnosis.CreatedDate.ToShortDateString()</li>
+                            <li class="list-group-item">
+                                @diagnosis.Description - @diagnosis.CreatedDate.ToShortDateString()
+                            </li>
                         }
                     </ul>
+
+                    <!-- Yeni Tanı Formu Toggle Butonu -->
+                    <button class="btn btn-secondary mt-3" id="toggleDiagnosisFormButton">
+                        <i class="bi bi-plus-circle me-2"></i> Yeni Tanı Ekle
+                    </button>
+
+                    <!-- Yeni Tanı Formu (Başlangıçta gizli) -->
+                    <div id="diagnosisFormContainer" class="mt-3" style="display: none;">
+                        <form method="post" id="diagnosesForm">
+                            <input type="hidden" name="PatientId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="Name" placeholder="Tanı Adı" required />
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="Code" placeholder="Tanı Kodu" required />
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" name="Description" placeholder="Tanı Açıklaması" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Tanı Ekle</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -308,3 +408,14 @@
         }
     </script>
 }
+<script>
+    // Yeni tanı formunun açılıp kapanmasını kontrol etmek için
+    document.getElementById('toggleDiagnosisFormButton').addEventListener('click', function () {
+        var formContainer = document.getElementById('diagnosisFormContainer');
+        if (formContainer.style.display === "none" || formContainer.style.display === "") {
+            formContainer.style.display = "block"; // Formu göster
+        } else {
+            formContainer.style.display = "none"; // Formu gizle
+        }
+    });
+</script>

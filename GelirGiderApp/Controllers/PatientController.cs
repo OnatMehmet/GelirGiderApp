@@ -117,14 +117,14 @@ namespace GelirGiderApp.Controllers
 
         public IActionResult Detail(Guid id)
         {
-            var patient = _context.Patients
-                .Include(p => p.Notes) // Hastanın notlarını getir
-                .Include(p => p.Payments) // Hastanın ödemelerini getir
-                .Include(p => p.Diagnoses)
-                .Include(p => p.Files)
-                .Include(p => p.Sales)
+            var patient = _context.Patients.Where(p => p.IsActive)
+                .Include(p => p.Notes).Where(n => n.IsActive) // Hastanın notlarını getir
+                .Include(p => p.Payments).Where(pys => pys.IsActive) // Hastanın ödemelerini getir
+                .Include(p => p.Diagnoses.Where(d => d.IsActive))
+                .Include(p => p.Files.Where(f => f.IsActive))
+                .Include(p => p.Sales.Where(s => s.IsActive))// Hastanın satışlarını getir
                 .ThenInclude(p=> p.Product)
-                .ThenInclude(p=>p.ProductType) // Hastanın satışlarını getir // Hastanın satışlarını getir
+                .ThenInclude(p=>p.ProductType)
                 .FirstOrDefault(p => p.Id == id);
 
             if (patient == null)
@@ -173,12 +173,11 @@ namespace GelirGiderApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddPayment(Guid PatientId, decimal Amount)
+        public IActionResult AddPayment(Guid PatientId, Guid SalesId, decimal Amount)
         {
             //var patient = _context.Patients.Include(p => p.Payments).FirstOrDefault(p => p.Id == PatientId);
-            var satis = _context.Sales.FirstOrDefault(x=>x.IsActive && x.PatientId == PatientId);
+            var satis = _context.Sales.FirstOrDefault(x=>x.IsActive &&  x.Id == SalesId && x.PatientId == PatientId);
             if (satis == null) return NotFound();
-
             satis.CreatedDate = DateTime.UtcNow;
             satis.PaymentAmount +=Amount;
             satis.RemainingAmount = satis.Price - satis.PaymentAmount;
@@ -189,6 +188,15 @@ namespace GelirGiderApp.Controllers
                 // return RedirectToAction("Detail", new { id = PatientId });
                 return Json(new { success = false, message = "Ödeme miktarınız kalan bakiyeden fazla olamaz!" });
             }
+
+            _context.Payments.Add(new Payment
+            {
+                PatientId = PatientId,
+                SalesId = satis.Id,
+                Amount = Amount,
+                PaymentDate = DateTime.UtcNow
+            });
+
             _context.Sales.Update(satis);
             _context.SaveChanges();
             // return RedirectToAction("Detail", new { id = PatientId }) ;

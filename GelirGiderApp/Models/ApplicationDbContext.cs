@@ -44,6 +44,10 @@ public class ApplicationDbContext : DbContext
             .WithMany(p => p.Diagnoses)
             .HasForeignKey(d => d.PatientId)
             .OnDelete(DeleteBehavior.Cascade);  // Hasta silindiğinde tanılar da silinsin
+
+        //Code Alanı benzersiz olsun
+        modelBuilder.Entity<Product>()
+            .HasIndex(p => p.Code).IsUnique();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

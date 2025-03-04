@@ -1,4 +1,5 @@
-﻿@model IEnumerable<GelirGiderApp.Models.Entities.Sales>
+﻿@using GelirGiderApp.Models.Entities
+@model IEnumerable<GelirGiderApp.Models.Entities.Sales>
 
 @{
     ViewData["Title"] = "Satışlar";
@@ -11,12 +12,14 @@
 <table id="salesTable" class="display">
     <thead>
         <tr>
+            <th>Satış Tarihi</th>
             <th>Hasta Ad Soyad</th>
             <th>Ürün</th>
             <th>Başlama Tarihi</th>
             <th>Satış Fiyatı</th>
             <th>Ödenen Miktar</th>
             <th>Kalan Miktar</th>
+            <th>Kullanım Aşaması</th> <!-- Kulanım aşaması -->
             <th>Açıklama</th>
             <th>İşlemler</th>
         </tr>
@@ -25,12 +28,14 @@
         @foreach (var satis in Model)
         {
             <tr>
+                <td>@satis.CreatedDate.ToShortDateString()</td>
                 <td>@satis.Patient.Name</td>
                 <td>@satis.Product.Name</td>
                 <td>@satis.Patient.StartDate.ToShortDateString()</td>
                 <td>@satis.Price</td>
                 <td>@satis.PaymentAmount</td>
                 <td>@satis.RemainingAmount</td>
+                <td>@satis.UsageStage</td>
                 <td>@satis.Description</td>
                 <td>
                     <a href="@Url.Action("Edit", "Sales", new { id = satis.Id })" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>

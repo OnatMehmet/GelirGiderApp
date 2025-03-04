@@ -40,6 +40,12 @@
                 </div>
                 <button type="submit" class="btn btn-success">Profili Güncelle</button>
             </form>
+            @if (ViewBag.ConfirmErrorMessage != null)
+            {
+                <div class="alert alert-danger mt-3 text-center">
+                    <i class="bi bi-exclamation-triangle"></i> @ViewBag.ConfirmErrorMessage
+                </div>
+            }
         </div>
     </div>
 </div>

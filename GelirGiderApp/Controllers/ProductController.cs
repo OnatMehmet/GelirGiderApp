@@ -79,6 +79,7 @@ namespace GelirGiderApp.Controllers
 
             // Hasta bilgilerini güncelle
             product.Name = model.Name;
+            product.Code = model.Code;
             product.Cost = model.Cost;
             product.SalePrice = model.SalePrice;
             product.ProductTypeId = model.ProductTypeId;

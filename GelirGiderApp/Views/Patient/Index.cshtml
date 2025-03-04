@@ -11,6 +11,8 @@
 <table id="patientsTable" class="display">
     <thead>
         <tr>
+
+            <th>İşlem Tarihi</th>
             <th>Ad Soyad</th>
             <th>Telefon</th>
             <th>Email</th>
@@ -24,6 +26,8 @@
         @foreach (var hasta in Model)
         {
             <tr>
+
+                <td>@hasta.CreatedDate</td>
                 <td>@hasta.Name</td>
                 <td>@hasta.PhoneNumber</td>
                 <td>@hasta.Email</td>

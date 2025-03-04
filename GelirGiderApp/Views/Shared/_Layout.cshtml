@@ -18,15 +18,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <style>
-        /* Sayfa tam oturması için body'ye min-height ekleyin */
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        
-    </style>
 </head>
 <body>
     <div class="row">
@@ -46,7 +37,7 @@
                 <!-- Patients -->
                 <li class="nav-item">
                     <a class="nav-link" href="#patientsSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="patientsSubmenu">
-                        <i class="bi bi-people"></i> Hasta İşlemleri <i class="bi bi-chevron-down"></i>
+                        <i class="bi bi-people"></i> Hasta İşlemleri <i class="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <div class="collapse" id="patientsSubmenu">
                         <ul class="nav flex-column px-2">
@@ -110,39 +101,38 @@
                         </ul>
                     </div>
                 </li>
-
                 <!-- User Management -->
-           @*      @if (ViewData["UserRole"] as string == "Admin")
+                @*      @if (ViewData["UserRole"] as string == "Admin")
                 { *@
-                    <li class="nav-item">
-                        <a class="nav-link" href="#usersSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="usersSubmenu">
-                            <i class="bi bi-person-plus"></i> Kullanıcı Yönetimi <i class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <div class="collapse" id="usersSubmenu">
-                            <ul class="nav flex-column px-2">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Create", "User")">
-                                        <i class="bi bi-plus-circle"></i> Yeni Kullanıcı Ekle
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Index", "User")">
-                                        <i class="bi bi-list"></i> Kullanıcı Listesi
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Create", "Role")">
-                                        <i class="fa-brands fa-critical-role"></i> Yeni Rol Ekle
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Index", "Role")">
-                                        <i class="bi bi-list"></i> Rol Listesi
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#usersSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="usersSubmenu">
+                        <i class="bi bi-person-plus"></i> Kullanıcı Yönetimi <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <div class="collapse" id="usersSubmenu">
+                        <ul class="nav flex-column px-2">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "User")">
+                                    <i class="bi bi-plus-circle"></i> Yeni Kullanıcı Ekle
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "User")">
+                                    <i class="bi bi-list"></i> Kullanıcı Listesi
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "Role")">
+                                    <i class="fa-brands fa-critical-role"></i> Yeni Rol Ekle
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Role")">
+                                    <i class="bi bi-list"></i> Rol Listesi
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 @* } *@
             </ul>
         </div>
@@ -150,21 +140,15 @@
         <!-- Main Content Area -->
         <div class="col-md-10">
             <div class="content-container p-4">
-
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <div class="container-fluid d-flex justify-content-between align-items-center">
                         <!-- Arama kutusu sola yerleştirildi -->
                         <div class="d-flex flex-grow-1 justify-content-start">
-                            <input class="form-control text-center" type="text" placeholder="Ara"  style="width:350px; border-radius:20px">
+                            <input class="form-control text-center" type="text" placeholder="Ara" style="width:350px; border-radius:20px">
                         </div>
 
                         <!-- Kullanıcı menüsü sağa yerleştirildi (Çıkış ve Profil) -->
                         <div class="d-flex align-items-center">
-                     @*        <span class="navbar-text me-3">
-                                <strong> @ViewBag.Username</strong>
-                            </span> 
- *@
-                            <!-- Dropdown menü -->
                             <div class="dropdown">
                                 <button class="btn btn-custom dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle me-2"></i>
@@ -186,9 +170,7 @@
                     </div>
                 </nav>
 
-
                 @RenderBody()
-
             </div>
         </div>
     </div>

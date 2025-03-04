@@ -1,4 +1,5 @@
-﻿@model GelirGiderApp.Models.Entities.Sales
+﻿@using GelirGiderApp.Models.Entities
+@model GelirGiderApp.Models.Entities.Sales
 
 @{
     ViewData["Title"] = "Satış Güncelle";
@@ -18,7 +19,7 @@
                         <input type="hidden" asp-for="Id" />
                         <!-- Hasta -->
                         <div class="mb-3">
-                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
+                            <label for="ProductTypeId" class="form-label">Hasta</label>
                             <div class="input-group">
                                 <select asp-for="PatientId" class="form-control" required>
                                     <option value="">Seçiniz...</option>
@@ -37,7 +38,7 @@
 
                         <!-- Ürün -->
                         <div class="mb-3">
-                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
+                            <label for="ProductTypeId" class="form-label">Ürün</label>
                             <div class="input-group">
                                 <select asp-for="ProductId" class="form-control" required>
                                     <option value="">Seçiniz...</option>
@@ -64,15 +65,35 @@
                         <!-- Ödenen Miktar -->
                         <div class="mb-3">
                             <label asp-for="PaymentAmount" class="form-label">Ödenen Miktar</label>
-                            <input asp-for="PaymentAmount" type="number" class="form-control" required />
+                            <input asp-for="PaymentAmount" type="number" class="form-control" readonly />
                             <div class="invalid-feedback">
                                 Lütfen maliyeti girin.
                             </div>
                         </div>
+
+                        <!-- Kullanım Aşamaı -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Kullanım Aşaması</label>
+                            <div class="input-group">
+                                <select  name="usageStage" class="form-control">
+                                    <option value="">Aşama Seçiniz</option>
+                                    @foreach (var type in ViewBag.UsageStages as Dictionary<ProductUsageStage, string>)
+                                    {
+                                        <option value="@type.Key" selected="@(Model.UsageStage == type.Key ? "selected" : null)">
+                                            @type.Value
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
+
                         <!-- Açıklama -->
                         <div class="mb-3">
                             <label asp-for="Description" class="form-label">Açıklama</label>
-                            <input asp-for="Description"  class="form-control" />
+                            <input asp-for="Description" class="form-control" />
                             <div class="invalid-feedback">
                                 Lütfen satış fiyatını girin.
                             </div>

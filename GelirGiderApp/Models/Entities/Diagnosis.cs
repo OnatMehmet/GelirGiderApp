@@ -3,7 +3,7 @@
     public class Diagnosis : BaseEntity<Diagnosis>
     {
         public string Code { get; set; }  // Tanı Kimliği
-        public string Description { get; set; }  // Tanı Açıklaması
+        public string Name { get; set; }  // Tanı Kimliği
         public Guid PatientId { get; set; }  // Hasta Kimliği (Foreign Key)
         public Patient Patient { get; set; }  // İlgili Hasta
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GelirGiderApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250304105232_mg7-CodeFieldAddedProduct")]
+    partial class mg7CodeFieldAddedProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,7 +271,7 @@ namespace GelirGiderApp.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
@@ -305,9 +308,6 @@ namespace GelirGiderApp.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.HasIndex("ProductTypeId");
 
@@ -388,21 +388,21 @@ namespace GelirGiderApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("385e83ec-77d1-44e5-acfd-1af02287fbc3"),
+                            Id = new Guid("555d17ad-bd0e-4e83-aa39-5792c8bc9396"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin",
-                            UpdatedDate = new DateTime(2025, 3, 4, 13, 26, 43, 142, DateTimeKind.Utc).AddTicks(850)
+                            UpdatedDate = new DateTime(2025, 3, 4, 10, 52, 32, 14, DateTimeKind.Utc).AddTicks(1685)
                         },
                         new
                         {
-                            Id = new Guid("b71f6663-82e6-49c4-b3cd-01e15000187c"),
+                            Id = new Guid("7d64c84e-ebbb-4063-b853-099542dbe358"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Doctor",
-                            UpdatedDate = new DateTime(2025, 3, 4, 13, 26, 43, 142, DateTimeKind.Utc).AddTicks(881)
+                            UpdatedDate = new DateTime(2025, 3, 4, 10, 52, 32, 14, DateTimeKind.Utc).AddTicks(1711)
                         });
                 });
 
@@ -447,9 +447,6 @@ namespace GelirGiderApp.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("UsageStage")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -1,4 +1,5 @@
-﻿@model GelirGiderApp.Models.Entities.Sales
+﻿@using GelirGiderApp.Models.Entities
+@model GelirGiderApp.Models.Entities.Sales
 
 @{
     ViewData["Title"] = "Hasta Satış İşlemi";
@@ -39,6 +40,23 @@
                             <label for="PaymentAmount" class="form-label">Ödenen Miktar</label>
                             <input type="number" class="form-control" id="PaymentAmount" name="PaymentAmount" required />
                         </div>
+                        <!-- Kullanım Aşamaı -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Kullanım Aşaması</label>
+                            <div class="input-group">
+                                <select asp-for="UsageStage" name="usageStage" class="form-control">
+                                    <option value="">Aşama Seçiniz</option>
+                                    @foreach (var stage in ViewBag.UsageStages as Dictionary<ProductUsageStage, string>)
+                                    {
+                                        <option value="@stage.Key">@stage.Value</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="Description" class="form-label">Açıklama</label>
                             <input type="text" class="form-control" id="Description" name="Description" />

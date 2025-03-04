@@ -134,6 +134,13 @@ namespace GelirGiderApp.Controllers
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
 
+            //Aynı Şifre Onayı
+
+            if(model.NewPassword != model.ConfirmPassword)
+            {
+                ViewBag.ConfirmErrorMessage = "Şifreler Uyuşmuyor!";
+                return RedirectToAction("Profile");
+            }
             // Şifre değiştirme
             if (!string.IsNullOrEmpty(model.NewPassword) && model.NewPassword == model.ConfirmPassword)
             {

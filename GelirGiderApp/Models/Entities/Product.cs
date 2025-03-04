@@ -3,6 +3,8 @@
     public class Product :BaseEntity<Product>
     {
         public required string Name { get; set; }  // Ürün adı
+    
+        public required string Code { get; set; }  // Ürün Kodu
         public decimal Cost { get; set; }  // Ürün maliyeti
         public decimal SalePrice { get; set; }  // Ürün satış fiyatı
         public Guid ProductTypeId { get; set; }  // Ürün tipi ID'si (Foreign Key)
