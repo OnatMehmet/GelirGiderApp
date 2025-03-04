@@ -25,8 +25,8 @@
                 <td>@role.CreatedDate.ToShortDateString()</td>
                 <td>@role.Description</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Role", new { id = role.Id })" class="btn btn-warning"><i class="fa fa-edit"></i></a>
-                    <button class="btn btn-danger" onclick="rolesSil('@role.Id', '@role.Name')"><i class="fa fa-trash"></i></button>
+                    <a href="@Url.Action("Edit", "Role", new { id = role.Id })" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                    <button class="btn btn-danger btn-sm" onclisck="rolesSil('@role.Id', '@role.Name')"><i class="fa fa-trash"></i></button>
                 </td>
 
             </tr>

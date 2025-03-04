@@ -1,107 +1,88 @@
-html {
-font-size: 14px;
+
+.html {
+    font-size: 14px;
 }
 
-/* Ensure the entire page takes full height */
-body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #16787c;
+.body {
+    font-size: 14px;
 }
 
+/* Sidebar styling */
+.sidebar {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+    padding-top: 30px;
+}
+
+    .sidebar .nav-item {
+        margin: 5px 25px;
+       
+
+    }
+
+    .sidebar .nav-link {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+        }
 /* Make the navbar wider and adjust spacing */
 .navbar {
     padding: 2rem 2rem;
     background-color: white;
     height: 100px;
     border-radius: 20px;
-    padding-bottom:20px;
-
+    padding-bottom: 20px;
 }
 /* Style the navbar text (username) */
 .navbar-text {
-font-size: 1.1rem;
-color: #333;
+    font-size: 1.1rem;
+    color: #333;
 }
 
 /* Adjust the spacing of the logout button */
 .navbar .btn {
-font-size: 1rem;
-padding: 0.5rem 1rem;
-margin-left: 1rem;
-}
-
-/* Sidebar için þýk bir yeþil-siyah gradient arka plan */
-.sidebar {
-    /*background: linear-gradient(to bottom right, #1a472a, #333);*/ /* Daha zengin yeþil tonlarý */
-    background-color:#16787c;
-    color: white; /* Beyaz metin rengi */
-    padding-top: 5px;
-    font-size:30px;
-    /*width:250px;*/
-
-}
-
-/* Sidebar baðlantýlarý için stil */
-.sidebar .nav-link {
-    font-size: 1.2rem;
-    padding: 10px 35px;
-    color: white;
-  
-}
-/* Alt menü stilini ayarla */
-.sidebar .collapse .nav-link {
-    font-size: 1.2rem;
-    padding-left: 35px;
-    color: white;
-}
-
-/* Hover efektiyle arka plan rengini deðiþtirme ve soldan padding ekleme */
-    .sidebar .nav-link:hover {
-        background-color: #ae2da3; /* Hover efekti için koyu yeþil ton */
-        padding-left: 35px; /* Hover sýrasýnda soldan daha fazla iç boþluk */
-        border-radius: 5px; /* Kenarlarý yuvarlatma */
-    }
-
-/* Sidebar'da alt menü açýlýrken animasyon */
-.sidebar .collapse {
-    transition: max-height 0.4s ease-out; /* Animasyon ile alt menü geçiþi */
-    max-height: 0;
-    overflow: hidden;
-}
-/* Alt menü baðlantýlarýnda hover efekti */
-    .sidebar .collapse .nav-link:hover {
-        background-color: #ae2da3; /* Alt menüde koyu yeþil ton */
-    }
-
-/* Alt menü açýldýðýnda */
-.sidebar .collapse.show {
-    max-height: 400px; /* Yüksekliði arttýrarak alt menüyü açma */
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
 }
 
 
+.content-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    font-size:13px;
+    font-weight:400;
+}
+
+/* Collapsible menu */
+.collapse ul {
+    padding-left: 30px;
+}
 
 /* Content container styling */
-.content-container {
+/*.content-container {
     background-color: #f2feff;
     min-height: 100vh;
     min-width: 100vh;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
     border-radius: 20px 0px 00px 20px;
-}
-
-/* Footer styling */
-footer {
-    background-color: #f8f8f8;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-}
-#logo {
-    color: red;
-    margin: 50px 20px 40px 80px;
-    font-size: 20px;
-    color: aliceblue;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}*/
+.btn-custom {
+    background-image: url('path_to_image.jpg');
+    background-size: cover;
+    color: black;
+    color: black;
+    font-weight: bold;
 }

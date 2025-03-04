@@ -1,0 +1,310 @@
+﻿@model GelirGiderApp.Models.Entities.Patient
+
+@{
+    ViewData["Title"] = "Hasta Detayları";
+}
+
+<style>
+    .patient-profile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-picture {
+        border-radius: 50%;
+        overflow: hidden;
+        width: 110px;
+        height: 110px;
+        border: 5px solid #28a745;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .profile-info {
+        text-align: left;
+    }
+
+        .profile-info h4 {
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .profile-info i {
+            color: #28a745;
+            font-size: 1.2rem;
+          
+        }
+
+    /* Nav Tab Tasarımı */
+    .nav-tabs {
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 20px;
+    }
+
+        .nav-tabs .nav-link {
+            font-size: 1rem;
+            padding: 15px 20px;
+            border: 0px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+            .nav-tabs .nav-link.active {
+                background-color: #4CAF50;
+                color: white;
+                border-color: #4CAF50;
+            }
+
+            .nav-tabs .nav-link:hover {
+                background-color: #f1c1c1;
+                border-color: #aaa;
+            }
+
+            .nav-tabs .nav-link i {
+                font-size: 1.2rem;
+            }
+
+            /* Sekme aktifken simge renk değiştirme */
+            .nav-tabs .nav-link.active i {
+                color: white;
+            }
+ 
+
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-danger, .btn-success, .btn-primary {
+        transition: transform 0.3s ease;
+    }
+
+        .btn-danger:hover, .btn-success:hover, .btn-primary:hover {
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-light text-black text-center">
+            <div class="patient-profile">
+                <div class="profile-picture">
+                    <img src="/images/blank-profile-picture-973460_1280.png" alt="Profil Fotoğrafı">
+                </div>
+                <div class="profile-info">
+                    <h4 class="fw-bold">@Model.Name</h4>
+                    <p><i class="bi bi-telephone"></i> <strong>Telefon:</strong> @Model.PhoneNumber</p>
+                    <p><i class="bi bi-envelope"></i> <strong>Email:</strong> @Model.Email</p>
+                    <p><i class="bi bi-calendar-check"></i> <strong>Başlangıç Tarihi:</strong> @Model.StartDate.ToShortDateString()</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body">
+            <!-- TAB MENÜSÜ -->
+    <ul class="nav nav-tabs" id="patientTab" role="tablist">
+    <li class="nav-item">
+        <button class="nav-link" data-bs-target="#info" data-bs-toggle="tab">
+            <i class="bi bi-info-circle me-2"></i> Hasta Bilgileri
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-target="#notes" data-bs-toggle="tab">
+            <i class="bi bi-file-earmark-text me-2"></i> Notlar
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-target="#sales" data-bs-toggle="tab">
+            <i class="bi bi-cart-check me-2"></i> Satış & Tahsilat
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-target="#files" data-bs-toggle="tab">
+            <i class="bi bi-folder me-2"></i> Dosya & Fotoğraf
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-target="#diagnosis" data-bs-toggle="tab">
+            <i class="bi bi-heart-pulse me-2"></i> Tanılar
+        </button>
+    </li>
+</ul>
+
+            <div class="tab-content mt-3">
+                <!-- Hasta Bilgileri -->
+                <div class="tab-pane fade" id="info">
+                    <table class="table">
+                        <tr><th>Ad Soyad:</th><td>@Model.Name</td></tr>
+                        <tr><th>Telefon:</th><td>@Model.PhoneNumber</td></tr>
+                        <tr><th>Email:</th><td>@Model.Email</td></tr>
+                        <tr><th>Adres:</th><td>@Model.Address</td></tr>
+                        <tr><th>Başlangıç Tarihi:</th><td>@Model.StartDate.ToShortDateString()</td></tr>
+                    </table>
+                </div>
+
+                <!-- Notlar -->
+                <div class="tab-pane fade" id="notes">
+                    <ul class="list-group">
+                        @foreach (var note in Model.Notes)
+                        {
+                            <li class="list-group-item" id="note-@note.Id">
+                                <p>@note.Description</p>
+                                <small class="text-muted">Eklenme: @note.CreatedDate.ToString("g")</small>
+                                <button class="btn btn-danger" onclick="notSil('@note.Id')"><i class="fa fa-trash"></i> Sil</button>
+                            </li>
+                        }
+                    </ul>
+                    <form method="post" asp-action="AddNote" asp-controller="Patient">
+                        <input type="hidden" name="PatientId" value="@Model.Id" />
+                        <textarea class="form-control mt-3" name="Description" placeholder="Yeni not ekleyin..." required></textarea>
+                        <button type="submit" class="btn btn-success mt-2">Not Ekle</button>
+                    </form>
+                </div>
+
+                <!-- Satışlar -->
+                <div class="tab-pane fade" id="sales">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Ürün</th>
+                                <th>Ürün Tipi</th>
+                                <th>Satış Fiyatı</th>
+                                <th>Ödenen Tutar</th>
+                                <th>Kalan Tutar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sales in Model.Sales)
+                            {
+                                <tr>
+                                    <td>@sales.Product.CreatedDate.ToShortDateString()</td>
+                                    <td>@sales.Product.Name</td>
+                                    <td>@sales.Product.ProductType.Name</td>
+                                    <td>@sales.Price ₺</td>
+                                    <td>@sales.PaymentAmount ₺</td>
+                                    <td>@sales.RemainingAmount ₺</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <form method="post" id="paymentForm">
+                        <input type="hidden" name="PatientId" value="@Model.Id" />
+                        <input type="number" class="form-control mt-3" name="Amount" placeholder="Ödeme Miktarı" required />
+                        <button type="submit" class="btn btn-primary mt-2">Yeni Ödeme Yap</button>
+                    </form>
+                </div>
+
+                <!-- Dosyalar -->
+                <div class="tab-pane fade" id="files" role="tabpanel">
+                    <form method="post" enctype="multipart/form-data" asp-action="UploadFile" asp-controller="Patient">
+                        <input type="hidden" name="PatientId" value="@Model.Id" />
+                        <input type="file" name="file" class="form-control mt-2" required />
+                        <button type="submit" class="btn btn-primary mt-2">Dosya Yükle</button>
+                    </form>
+                    <ul class="list-group mt-3">
+                        @foreach (var file in Model.Files)
+                        {
+                            <li class="list-group-item">
+                                <a href="@file.FilePath" target="_blank">@file.FileName</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Tanılar -->
+                <div class="tab-pane fade" id="diagnosis" role="tabpanel">
+                    <ul class="list-group">
+                        @foreach (var diagnosis in Model.Diagnoses)
+                        {
+                            <li class="list-group-item">@diagnosis.Description - @diagnosis.CreatedDate.ToShortDateString()</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            let activeTab = urlParams.get("section") || "info"; // Eğer parametre yoksa 'info' sekmesi varsayılan
+
+            if (activeTab) {
+                let tabElement = document.querySelector(`button[data-bs-target="#${activeTab}"]`);
+                if (tabElement) {
+                    new bootstrap.Tab(tabElement).show();
+                }
+            }
+
+            document.querySelectorAll("#patientTab button").forEach(tab => {
+                tab.addEventListener("click", function () {
+                    const section = this.getAttribute("data-bs-target").replace("#", "");
+                    const newUrl = `${window.location.pathname}?section=${section}`;
+                    history.pushState(null, "", newUrl);
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#paymentForm").submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddPayment", "Patient")",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Başarılı!', 'Ödeme eklendi!', 'success')
+                                .then(() => {
+                                    window.location.href = `${window.location.pathname}?section=sales`;
+                                });
+                        } else {
+                            Swal.fire('Hata!', response.message, 'error');
+                        }
+                    }
+                });
+            });
+        });
+
+        function notSil(noteId) {
+            $.ajax({
+                url: '@Url.Action("DeleteNote", "Patient")',
+                type: 'POST',
+                data: { noteId: noteId },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire('Başarılı!', 'Not silindi!', 'success')
+                            .then(() => window.location.href = `${window.location.pathname}?section=notes`);
+                    }
+                }
+            });
+        }
+    </script>
+}

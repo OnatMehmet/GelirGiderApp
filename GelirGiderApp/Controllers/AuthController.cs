@@ -56,6 +56,7 @@ namespace GelirGiderApp.Controllers
         {
             var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.Name, user.Username),  // Kullanıcı adı
             new Claim(JwtRegisteredClaimNames.Sub, user.Username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim("role", _context.Roles.FirstOrDefault(x=>x.Id == user.RoleId).Name) // Kullanıcının rolünü de ekliyoruz

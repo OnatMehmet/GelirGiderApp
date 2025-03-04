@@ -18,6 +18,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Sales> Sales { get; set; }
     public DbSet<Note> Notes { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Files> Files { get; set; }
+    public DbSet<Diagnosis> Diagnoses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +31,19 @@ public class ApplicationDbContext : DbContext
             new Role { Id = Guid.NewGuid(), Name = "Admin" },
             new Role { Id = Guid.NewGuid(), Name = "Doctor" }
         );
+        // Dosya ile ilgili konfigürasyonlar
+        modelBuilder.Entity<Files>()
+            .HasOne(f => f.Patient)
+            .WithMany(p => p.Files)
+            .HasForeignKey(f => f.PatientId)
+            .OnDelete(DeleteBehavior.Cascade);  // Hasta silindiğinde dosyalar da silinsin
+
+        // Tanı ile ilgili konfigürasyonlar
+        modelBuilder.Entity<Diagnosis>()
+            .HasOne(d => d.Patient)
+            .WithMany(p => p.Diagnoses)
+            .HasForeignKey(d => d.PatientId)
+            .OnDelete(DeleteBehavior.Cascade);  // Hasta silindiğinde tanılar da silinsin
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

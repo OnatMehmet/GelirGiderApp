@@ -2,8 +2,6 @@
 {
     public class BaseEntity<T>
     {
-        private readonly ApplicationDbContext _context;
-
         public BaseEntity()
         {
             Id = Guid.NewGuid();

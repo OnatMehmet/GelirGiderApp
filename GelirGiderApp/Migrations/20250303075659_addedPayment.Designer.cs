@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GelirGiderApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250303075659_addedPayment")]
+    partial class addedPayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,96 +23,6 @@ namespace GelirGiderApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.Diagnosis", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Diagnoses");
-                });
-
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.Files", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("Files");
-                });
 
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Note", b =>
                 {
@@ -378,21 +291,21 @@ namespace GelirGiderApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b2b636aa-ed66-4b59-b83b-9735a46aec0e"),
+                            Id = new Guid("2e54022c-304f-45a1-9e85-8c4a18e4658f"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin",
-                            UpdatedDate = new DateTime(2025, 3, 4, 7, 48, 27, 970, DateTimeKind.Utc).AddTicks(3557)
+                            UpdatedDate = new DateTime(2025, 3, 3, 7, 56, 58, 375, DateTimeKind.Utc).AddTicks(8791)
                         },
                         new
                         {
-                            Id = new Guid("2573525e-2964-469d-8a38-8172574d270d"),
+                            Id = new Guid("4695d857-f1d6-4d5b-ac35-1c5fd1f6ed18"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Doctor",
-                            UpdatedDate = new DateTime(2025, 3, 4, 7, 48, 27, 970, DateTimeKind.Utc).AddTicks(3593)
+                            UpdatedDate = new DateTime(2025, 3, 3, 7, 56, 58, 375, DateTimeKind.Utc).AddTicks(8819)
                         });
                 });
 
@@ -504,28 +417,6 @@ namespace GelirGiderApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.Diagnosis", b =>
-                {
-                    b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
-                        .WithMany("Diagnoses")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.Files", b =>
-                {
-                    b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
-                        .WithMany("Files")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Note", b =>
                 {
                     b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
@@ -605,10 +496,6 @@ namespace GelirGiderApp.Migrations
 
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Patient", b =>
                 {
-                    b.Navigation("Diagnoses");
-
-                    b.Navigation("Files");
-
                     b.Navigation("Notes");
 
                     b.Navigation("Payments");

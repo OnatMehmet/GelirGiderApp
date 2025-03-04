@@ -1,6 +1,10 @@
-﻿using GelirGiderApp.Models.Entities;
+﻿using GelirGiderApp.Models;
+using GelirGiderApp.Models.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace GelirGiderApp.Controllers
 {
@@ -80,6 +84,66 @@ namespace GelirGiderApp.Controllers
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Kullanıcı Silme işlemi başarıyla silindi!" });
+        }
+        private string GetUsernameFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            var username = jsonToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            return username;
+        }
+        public IActionResult Profile()
+        {
+           
+            var token = Request.Cookies["jwt_token"];
+
+            if (token != null)
+            {
+                var username = GetUsernameFromToken(token);
+
+                var user = _context.Users.Include(x=>x.Role).FirstOrDefault(u => u.Username == username);
+                // Oturumdaki kullanıcıyı al
+                if (user == null)
+                {
+                    return RedirectToAction("Login", "Auth");
+                }
+                var model = new UserProfileViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Role = user.Role.Name // Veritabanında Rol varsa
+                };
+                return View(model);
+            }
+            return View();
+
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfile(UserProfileViewModel model)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == model.Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Ad Soyad güncelleme
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+
+            // Şifre değiştirme
+            if (!string.IsNullOrEmpty(model.NewPassword) && model.NewPassword == model.ConfirmPassword)
+            {
+                user.Password = model.NewPassword; // Şifre hashleme yapman gerekir!
+            }
+
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Profil başarıyla güncellendi!";
+            return RedirectToAction("Profile");
         }
     }
 
