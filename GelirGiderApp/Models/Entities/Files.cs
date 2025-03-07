@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class Files : BaseEntity<Files>
+    public class Files : BaseEntity
     {
         public string FileName { get; set; }  // Dosya Adı
         public string FilePath { get; set; }  // Dosya Yolu

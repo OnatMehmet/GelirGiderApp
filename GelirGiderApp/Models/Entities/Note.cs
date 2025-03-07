@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class Note :BaseEntity<Note>
+    public class Note :BaseEntity
     {
         public  Guid PatientId { get; set; }
         public Patient? Patient { get; set; }        

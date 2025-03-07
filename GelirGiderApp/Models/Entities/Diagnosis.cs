@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class Diagnosis : BaseEntity<Diagnosis>
+    public class Diagnosis : BaseEntity
     {
         public string Code { get; set; }  // Tanı Kimliği
         public string Name { get; set; }  // Tanı Kimliği

@@ -1,5 +1,6 @@
 ﻿using GelirGiderApp.Models;
 using GelirGiderApp.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace GelirGiderApp.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -92,34 +94,6 @@ namespace GelirGiderApp.Controllers
             var username = jsonToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             return username;
         }
-        public IActionResult Profile()
-        {
-           
-            var token = Request.Cookies["jwt_token"];
-
-            if (token != null)
-            {
-                var username = GetUsernameFromToken(token);
-
-                var user = _context.Users.Include(x=>x.Role).FirstOrDefault(u => u.Username == username);
-                // Oturumdaki kullanıcıyı al
-                if (user == null)
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
-                var model = new UserProfileViewModel
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    Role = user.Role.Name // Veritabanında Rol varsa
-                };
-                return View(model);
-            }
-            return View();
-
-        }
 
         [HttpPost]
         public IActionResult UpdateProfile(UserProfileViewModel model)
@@ -136,7 +110,7 @@ namespace GelirGiderApp.Controllers
 
             //Aynı Şifre Onayı
 
-            if(model.NewPassword != model.ConfirmPassword)
+            if (model.NewPassword != model.ConfirmPassword)
             {
                 ViewBag.ConfirmErrorMessage = "Şifreler Uyuşmuyor!";
                 return RedirectToAction("Profile");

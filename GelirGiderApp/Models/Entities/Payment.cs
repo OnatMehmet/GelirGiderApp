@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class Payment: BaseEntity<Payment>
+    public class Payment: BaseEntity
     {
         public decimal? Amount { get; set; }
         public DateTime PaymentDate { get; set; }

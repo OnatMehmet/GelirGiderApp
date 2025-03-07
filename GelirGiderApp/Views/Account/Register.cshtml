@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Kayıt Ol";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+@model GelirGiderApp.Models.RegisterModel
+
+
+<h4 class="login-title"> Kayıt Ol</h4>
+<div class="card-body">
+    <form method="post" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="FullName" class="form-label">Tam Adınız</label>
+            <input type="text" class="form-control" id="FullName" name="FullName" required />
+            <div class="invalid-feedback">
+                Lütfen adınızı girin.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="UserName" class="form-label">Kullanıcı Adı</label>
+            <input type="text" class="form-control" id="UserName" name="UserName" required />
+            <div class="invalid-feedback">
+                Lütfen kullanıcı adınızı girin.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">E-posta</label>
+            <input type="email" class="form-control" id="Email" name="Email" required />
+            <div class="invalid-feedback">
+                Lütfen geçerli bir e-posta adresi girin.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Şifre</label>
+            <input type="password" class="form-control" id="Password" name="Password" required />
+            <div class="invalid-feedback">
+                Lütfen şifrenizi girin.
+            </div>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-success btn-lg">Kayıt Ol</button>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}
+

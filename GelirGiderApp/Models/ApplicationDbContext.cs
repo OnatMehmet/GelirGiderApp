@@ -1,7 +1,8 @@
 ﻿using GelirGiderApp.Models.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
@@ -49,34 +50,37 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Product>()
             .HasIndex(p => p.Code).IsUnique();
     }
+    public override int SaveChanges()
+    {
+        SetAuditFields();
+        return base.SaveChanges();
+    }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var entries = ChangeTracker.Entries()
-     .Where(e => e.Entity is BaseEntity<object> &&
-                 (e.State == EntityState.Added || e.State == EntityState.Modified))
-     .ToList();
+        SetAuditFields();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 
-        var currentUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System"; // Mevcut kullanıcı adı (giriş yapmış kullanıcı)
+    private void SetAuditFields()
+    {
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+        string currentUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System"; // Kullanıcı adı
 
         foreach (var entry in entries)
         {
-            if (entry.Entity is BaseEntity<object> entity)
+            var entity = (BaseEntity)entry.Entity;
+
+            if (entry.State == EntityState.Added)
             {
-                if (entry.State == EntityState.Added)
-                {
-                    entity.CreatedBy = currentUser;
-                    entity.CreatedDate = DateTime.Now;
-                }
-
-                if (entry.State == EntityState.Modified)
-                {
-                    entity.UpdatedBy = currentUser;
-                    entity.UpdatedDate = DateTime.Now;
-                }
+                entity.CreatedDate = DateTime.UtcNow;
+                entity.CreatedBy ??= currentUser; // Eğer CreatedBy boşsa, sadece ilk seferde ekle
             }
-        }
 
-        return await base.SaveChangesAsync(cancellationToken);
+            entity.UpdatedDate = DateTime.UtcNow;
+            entity.UpdatedBy = currentUser;
+        }
     }
 }

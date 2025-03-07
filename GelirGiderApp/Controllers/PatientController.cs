@@ -8,16 +8,16 @@ namespace GelirGiderApp.Controllers
     public class PatientController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public PatientController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        #region Hasta CRUD işlemleri
         // GET: Hasta
         public async Task<IActionResult> Index()
         {
-            var hastalar = await _context.Patients.Where(x=>x.IsActive).ToListAsync();
+            var hastalar = await _context.Patients.Where(x => x.IsActive).ToListAsync();
             return View(hastalar);
         }
 
@@ -26,37 +26,36 @@ namespace GelirGiderApp.Controllers
         {
             return View();
         }
-
         // POST: Hasta/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,PhoneNumber,Address,StartDate,Description")] Patient hasta)
+        public async Task<IActionResult> Create(Patient model)
         {
-      
-            if (ModelState.IsValid)
-            {   // Telefon numarasını kontrol et
-                //var existingPatient = _context.Patients.FirstOrDefault(p => p.PhoneNumber == hasta.PhoneNumber);
-
-                //if (existingPatient != null)
-                //{
-                //    // Eğer telefon numarası zaten kayıtlıysa, hata mesajı döndür
-                //    ModelState.AddModelError("PhoneNumber", "Bu telefon numarası zaten kayıtlı!");
-                //    return View(hasta);
-                //}
-                _context.Add(hasta);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Hasta başarıyla eklendi!";
-                return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage)
+                                              .ToList();
+                return Json(new { success = false, message = string.Join(" ", errors) });
             }
-            return View(hasta);
 
+            // Telefon kontrolü
+            if (_context.Patients.Any(p => p.PhoneNumber == model.PhoneNumber))
+            {
+                return Json(new { success = false, message = "Bu telefon numarası zaten kayıtlı!" });
+            }
+
+            //// Email kontrolü
+            //if (_context.Patients.Any(p => p.Email == model.Email))
+            //{
+            //    return Json(new { success = false, message = "Bu email adresi zaten kayıtlı!" });
+            //}
+
+            await _context.Patients.AddAsync(model);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Hasta başarıyla eklendi!" });
         }
-        [HttpGet]
-        public IActionResult IsPhoneExist(string phoneNumber)
-        {
-            bool isExist = _context.Patients.Any(p => p.PhoneNumber == phoneNumber);
-            return Json(new { exists = isExist});
-        }
+
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
@@ -74,28 +73,44 @@ namespace GelirGiderApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage)
+                                              .ToList();
+                return Json(new { success = false, message = string.Join(" ", errors) });
             }
 
-            var patient = _context.Patients.FirstOrDefault(p => p.Id == model.Id);
+            var patient = _context.Patients.Find(model.Id);
             if (patient == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Hasta bulunamadı!" });
             }
 
-            // Hasta bilgilerini güncelle
+            // Telefon numarasını kontrol et (aynı ID hariç)
+            if (_context.Patients.Any(p => p.PhoneNumber == model.PhoneNumber && p.Id != model.Id))
+            {
+                return Json(new { success = false, message = "Bu telefon numarası başka bir hastaya ait!" });
+            }
+
+            // Email kontrolü (aynı ID hariç)
+            //if (_context.Patients.Any(p => p.Email == model.Email && p.Id != model.Id))
+            //{
+            //    return Json(new { success = false, message = "Bu email başka bir hastaya ait!" });
+            //}
+
+            // Güncelleme işlemi
             patient.Name = model.Name;
             patient.PhoneNumber = model.PhoneNumber;
             patient.Email = model.Email;
             patient.Address = model.Address;
-            patient.StartDate = model.StartDate;
             patient.Description = model.Description;
+            patient.StartDate = model.StartDate;
 
+            _context.Patients.Update(patient);
             _context.SaveChanges();
 
-            TempData["Success"] = "Hasta başarıyla güncellendi!";
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Hasta başarıyla güncellendi!" });
         }
+
 
         // GET: Hasta/Delete/5
         [HttpPost]
@@ -115,6 +130,9 @@ namespace GelirGiderApp.Controllers
             return Json(new { success = true, message = "Hasta başarıyla silindi!" });
         }
 
+        #endregion
+
+        #region Hasta Profili
         public IActionResult Detail(Guid id)
         {
             var patient = _context.Patients.Where(p => p.IsActive)
@@ -123,8 +141,8 @@ namespace GelirGiderApp.Controllers
                 .Include(p => p.Diagnoses.Where(d => d.IsActive))
                 .Include(p => p.Files.Where(f => f.IsActive))
                 .Include(p => p.Sales.Where(s => s.IsActive))// Hastanın satışlarını getir
-                .ThenInclude(p=> p.Product)
-                .ThenInclude(p=>p.ProductType)
+                .ThenInclude(p => p.Product)
+                .ThenInclude(p => p.ProductType)
                 .FirstOrDefault(p => p.Id == id);
 
             if (patient == null)
@@ -143,7 +161,7 @@ namespace GelirGiderApp.Controllers
 
 
             model.CreatedDate = DateTime.Now;
-   
+
             _context.Notes.Add(model);
             _context.SaveChanges();
             // Yönlendirmeyi hash ile yap
@@ -176,12 +194,12 @@ namespace GelirGiderApp.Controllers
         public IActionResult AddPayment(Guid PatientId, Guid SalesId, decimal Amount)
         {
             //var patient = _context.Patients.Include(p => p.Payments).FirstOrDefault(p => p.Id == PatientId);
-            var satis = _context.Sales.FirstOrDefault(x=>x.IsActive &&  x.Id == SalesId && x.PatientId == PatientId);
+            var satis = _context.Sales.FirstOrDefault(x => x.IsActive && x.Id == SalesId && x.PatientId == PatientId);
             if (satis == null) return NotFound();
             satis.CreatedDate = DateTime.UtcNow;
-            satis.PaymentAmount +=Amount;
+            satis.PaymentAmount += Amount;
             satis.RemainingAmount = satis.Price - satis.PaymentAmount;
-            if(satis.RemainingAmount< 0)
+            if (satis.RemainingAmount < 0)
             {
                 // ViewBag.NotMines = "Ödeme Miktarınız kalan Bakiyenizden Fazla Olamaz";
                 //TempData["NotMines"] = "Ödeme Miktarınız kalan bakiyenizden fazla olamaz!";
@@ -203,13 +221,7 @@ namespace GelirGiderApp.Controllers
             return Json(new { success = true });
         }
 
-
-        private bool HastaExists(Guid id)
-        {
-            return _context.Patients.Any(e => e.Id == id);
-        }
-
+        #endregion
 
     }
 }
-

@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace GelirGiderApp.Controllers
-{ 
+{
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,47 +18,28 @@ namespace GelirGiderApp.Controllers
         }
         public IActionResult Index()
         {
-            // Oturumda kullanýcý adý var mý kontrol et
-            //var username = User.Identity.Name; //HttpContext.Session.GetString("Username");
-
-            var token = Request.Cookies["jwt_token"];
-
-            if (token != null)
+            var userName = User.Identity.Name; // Giriþ yapan kullanýcýnýn adýný al
+            //return Ok(new { message = $"Hoþgeldin {userName}" });
+            if (string.IsNullOrEmpty(userName))
             {
-                var username = GetUsernameFromToken(token);
-                Guid userRoleId = _context.Users.FirstOrDefault(x => x.Username == username).RoleId ;
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                //Guid userRoleId = _context.Users.FirstOrDefault(x => x.Username == userName).RoleId;
 
-                var userRole = _context.Roles.FirstOrDefault(x => x.Id == userRoleId).Name;
-                ViewBag.Username = username;
-                ViewBag.userRole = userRole;
+                //var userRole = _context.Roles.FirstOrDefault(x => x.Id == userRoleId).Name;
+                ViewBag.Username = userName;
+                ViewBag.userRole = "Admin";//userRole;
 
                 ViewBag.TotalPatients = _context.Patients.Where(x => x.IsActive).Count();
                 ViewBag.TotalProducts = _context.Products.Where(x => x.IsActive).Count();
                 ViewBag.TotalIncome = _context.Sales.Where(x => x.IsActive).Sum(s => s.PaymentAmount);
                 ViewBag.TotalExpense = _context.Products.Where(x => x.IsActive).Sum(e => e.Cost);//maliyet
                 ViewBag.TotalSales = _context.Sales.Where(x => x.IsActive).Count();
-                ViewBag.TotalRemainingPayments =_context.Sales.Where(x=>x.IsActive).Sum(s => s.Price - s.PaymentAmount);
-
+                ViewBag.TotalRemainingPayments = _context.Sales.Where(x => x.IsActive).Sum(s =>s.Price - s.PaymentAmount);
+                return View();
             }
-            else
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            return View();
-        }
-        private string GetUsernameFromToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-            var username = jsonToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
-            return username;
-        }
-    
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

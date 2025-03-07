@@ -2,7 +2,7 @@
 
 namespace GelirGiderApp.Models.Entities
 {
-    public class Sales :BaseEntity<Sales>
+    public class Sales :BaseEntity
     {
 
         public decimal PaymentAmount { get; set; }  // Ödeme miktarı

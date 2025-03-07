@@ -1,0 +1,52 @@
+﻿
+@using GelirGiderApp.Models
+@model UserProfileViewModel
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h4>Profilim</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateProfile" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label">Ad</label>
+                    <input asp-for="FirstName" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Soyad</label>
+                    <input asp-for="LastName" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">E-posta</label>
+                    <input asp-for="Email" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Rol</label>
+                    <input asp-for="Role" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yeni Şifre</label>
+                    <input asp-for="NewPassword" type="password" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yeni Şifre (Tekrar)</label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-success">Profili Güncelle</button>
+            </form>
+            @if (ViewBag.ConfirmErrorMessage != null)
+            {
+                <div class="alert alert-danger mt-3 text-center">
+                    <i class="bi bi-exclamation-triangle"></i> @ViewBag.ConfirmErrorMessage
+                </div>
+            }
+        </div>
+    </div>
+</div>

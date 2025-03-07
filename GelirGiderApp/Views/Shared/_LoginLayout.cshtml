@@ -32,11 +32,12 @@
             text-align: center;
             color: #203a43;
         }
-    </style> 
+    </style>  
 </head>
 <body>
     <div class="login-container">
         @RenderBody()
     </div>
+        @RenderSection("Scripts", required: false)
 </body>
 </html>

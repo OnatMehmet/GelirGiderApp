@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class ProductType : BaseEntity<ProductType>
+    public class ProductType : BaseEntity
     {
         public required string Name { get; set; }
 

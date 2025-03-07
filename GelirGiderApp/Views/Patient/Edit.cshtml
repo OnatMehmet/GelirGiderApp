@@ -64,69 +64,64 @@
 </div>
 @section Scripts {
     <script>
-        // Telefon Kontrol
-        $(document).ready(function () {
-            var phoneExist = false;
-            $("#PhoneNumber").on("blur", function () {
-                var phoneNumber = $(this).val();
+           $(document).ready(function () {
 
-                if (phoneNumber.length === 10) { // 10 haneli mi kontrol et
-                    console.log("Telefon kontrol ediliyor..."); // Debug için
-                    $.ajax({
-                        url: '/Patient/IsPhoneExist', // Controller'daki metot
-                        type: 'GET',
-                        data: { phoneNumber: phoneNumber },
-                        success: function (response) {
-                          //  console.log("Cevap:", response); // Konsolda cevabı göster
-                            if (response.exists) {
-                                phoneExist = true;
-                                // 🚀 SweetAlert2 ile Şık Uyarı
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Kayıtlı Telefon!',
-                                    text: 'Bu telefon numarası sistemde zaten kayıtlı. Lütfen farklı bir numara girin!',
-                                    confirmButtonColor: '#d33',
-                                    confirmButtonText: 'Tamam'
-                                });
-                            } else {
-                                phoneExist = false;
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Hata:", error);
-                        }
-                    });
-                }
-            });
-            // Formun gönderilmesini engelle
-            $("#hastaDuzenleForm").on("submit", function (event) {
-                if (phoneExist) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Hata!',
-                        text: 'Bu telefon numarası zaten kayıtlı! Lütfen farklı bir numara girin.',
-                        confirmButtonColor: '#d33',
-                        confirmButtonText: 'Tamam'
-                    });
-                }
-            });
-        });
+                 // İsim alanı için minimum 3 karakter kontrolü
+                  $("#Name").on("input", function () {
+                      var name = $(this).val();
+                      if (name.length < 3) {
+                          $("#nameError").text("İsim en az 3 karakter olmalıdır.");
+                      } else {
+                          $("#nameError").text("");
+                      }
+                  });
+
+               // Form submit olayı
+               $("#hastaDuzenleForm").on("submit", function (event) {
+                   event.preventDefault();
+                   $.ajax({
+                       url: '/Patient/Edit',
+                       type: 'POST',
+                       data: $("#hastaDuzenleForm").serialize(),
+                       success: function (response) {
+                           if (response.success) {
+                               Swal.fire({
+                                   icon: 'success',
+                                   title: 'Başarılı!',
+                                   text: response.message,
+                                   confirmButtonColor: '#28a745',
+                                   confirmButtonText: 'Tamam'
+                               }).then(() => {
+                                   window.location.href = '/Patient/Index';
+                               });
+                           } else {
+                               Swal.fire({
+                                   icon: 'error',
+                                   title: 'Hata!',
+                                   text: response.message,
+                                   confirmButtonColor: '#d33',
+                                   confirmButtonText: 'Tamam'
+                               });
+                           }
+                       }
+                   });
+               });
+           });
+
         // Bootstrap form validation
-        (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
+           (function () {
+               'use strict'
+               var forms = document.querySelectorAll('.needs-validation')
+               Array.prototype.slice.call(forms)
+                   .forEach(function (form) {
+                       form.addEventListener('submit', function (event) {
+                           if (!form.checkValidity()) {
+                               event.preventDefault()
+                               event.stopPropagation()
+                           }
+                           form.classList.add('was-validated')
+                       }, false)
+                   })
+           })()
     </script>
 }

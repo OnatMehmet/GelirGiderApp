@@ -31,7 +31,7 @@ namespace GelirGiderApp.Controllers
         [HttpPost]
         public IActionResult Login(LoginModel login)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == login.Username && u.Password == login.Password);
+            var user = _context.Users.FirstOrDefault(u => u.Username == login.UserName && u.Password == login.Password);
             if (user == null )// || !VerifyPasswordHash(login.Password, user.Password)
             {
                 ModelState.AddModelError("", "Geçersiz kullanıcı adı veya şifre");

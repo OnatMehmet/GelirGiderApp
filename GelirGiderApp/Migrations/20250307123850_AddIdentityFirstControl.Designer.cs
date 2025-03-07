@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GelirGiderApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250307123850_AddIdentityFirstControl")]
+    partial class AddIdentityFirstControl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,11 +70,7 @@ namespace GelirGiderApp.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -488,21 +487,21 @@ namespace GelirGiderApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2cc63682-a12b-43f1-88ec-9244e5f1d624"),
+                            Id = new Guid("c1cdd17e-b635-4131-a658-56ac90a775b4"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin",
-                            UpdatedDate = new DateTime(2025, 3, 7, 13, 38, 21, 199, DateTimeKind.Utc).AddTicks(816)
+                            UpdatedDate = new DateTime(2025, 3, 7, 12, 38, 49, 733, DateTimeKind.Utc).AddTicks(6278)
                         },
                         new
                         {
-                            Id = new Guid("8d813dea-268f-4613-b622-adc08b95c4f6"),
+                            Id = new Guid("f9578da3-6dcd-4df5-b8fc-b98a5a2f8271"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Doctor",
-                            UpdatedDate = new DateTime(2025, 3, 7, 13, 38, 21, 199, DateTimeKind.Utc).AddTicks(821)
+                            UpdatedDate = new DateTime(2025, 3, 7, 12, 38, 49, 733, DateTimeKind.Utc).AddTicks(6287)
                         });
                 });
 

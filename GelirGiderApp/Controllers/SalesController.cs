@@ -137,6 +137,7 @@ namespace GelirGiderApp.Controllers
                 sales.PaymentAmount = model.PaymentAmount;
                 sales.RemainingAmount = model.Price - model.PaymentAmount;
                 sales.Description = model.Description;
+                sales.UsageStage = model.UsageStage;
 
 
 

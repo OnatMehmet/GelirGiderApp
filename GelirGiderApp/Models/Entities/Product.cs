@@ -1,6 +1,6 @@
 ﻿namespace GelirGiderApp.Models.Entities
 {
-    public class Product :BaseEntity<Product>
+    public class Product :BaseEntity
     {
         public required string Name { get; set; }  // Ürün adı
     

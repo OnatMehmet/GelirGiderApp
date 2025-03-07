@@ -1,8 +1,12 @@
-﻿namespace GelirGiderApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GelirGiderApp.Models
 {
     public class LoginModel
     {
-        public required string Username { get; set; }
+        [Required(ErrorMessage ="Lütfen Kullanıcı Adını Giriniz")]
+        public required string UserName { get; set; }
+        [Required(ErrorMessage = "Lütfen Şifrenizi Giriniz")]
         public required string Password { get; set; }
     }
 }
