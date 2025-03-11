@@ -1,94 +1,86 @@
-﻿@{
+﻿@model GelirGiderApp.Models.ViewModels.RegisterModel
+@{
     ViewData["Title"] = "Yeni Kullanıcı Ekle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model GelirGiderApp.Models.Entities.Patient
-
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white text-center">
-                    <h4>Yeni Hasta Ekle</h4>
+                    <h5>Yeni Kullanıcı Ekle</h5>
                 </div>
                 <div class="card-body">
                     <!-- Form Başlangıcı -->
                     <form method="post" class="needs-validation" novalidate>
                         <div class="row">
-                            <!-- Ad Alanı -->
+                            <!-- Kullanıcı Ad Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="Name" class="form-label">Ad</label>
-                                <input type="text" class="form-control" id="FirstName" name="FirstName" required />
-                                <div class="invalid-feedback">
-                                    Lütfen adı girin.
-                                </div>
+                                <label class="form-label">Kullanıcı Adı</label>
+                                <input type="text" class="form-control" asp-for="UserName" required />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
                             </div>
+                            <!--Ad Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label>Ad</label>
+                                <input type="text" asp-for="FirstName" class="form-control" required />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
                             <!-- Soyad Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="Name" class="form-label">Soyad</label>
-                                <input type="text" class="form-control" id="LastName" name="LastName" required />
-                                <div class="invalid-feedback">
-                                    Lütfen adı girin.
-                                </div>
+                                <label>Soyad</label>
+                                <input type="text" asp-for="LastName" class="form-control" required />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="row">
+
                             <!-- Email Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="Email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="Email" name="Email" required />
-                                <div class="invalid-feedback">
-                                    Lütfen geçerli bir email adresi girin.
-                                </div>
-                            </div>
-
-                            <!-- Kullanıcı Alanı -->
-                            <div class="col-md-6 mb-3">
-                                <label for="Address" class="form-label">Kullanıcı Adı</label>
-                                <input type="text" class="form-control" id="Username" name="Username" required />
-                                <div class="invalid-feedback">
-                                    Lütfen adresi girin.
-                                </div>
+                                <label>Email</label>
+                                <input type="email" asp-for="Email" class="form-control" required />
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row">
-                            <!-- Parola Alanı -->
+                            <!-- Telefon Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="Address" class="form-label">Şifre</label>
-                                <input type="text" class="form-control" id="Password" name="Password" required />
-                                <div class="invalid-feedback">
-                                    Lütfen adresi girin.
-                                </div>
+                                <label>Telefon Numarası</label>
+                                <input type="text" asp-for="PhoneNumber" class="form-control" required />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </div>
+
+                            <!--Parola -->
                             <div class="col-md-6 mb-3">
-                            <label for="ProductId" class="form-label">Rol</label>
-                                <select id="RoleId" name="RoleId" class="form-select" required>
-                                <option value="">Rol Seçin...</option>
-                                @foreach (var role in ViewBag.Roles)
-                                {
-                                    <option value="@role.Id">@role.Name</option>
-                                }
-                            </select>
-                        </div>
+                                <label>Şifre</label>
+                                <input type="password" asp-for="Password" class="form-control" required />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
                         </div>
                         <div class="row">
 
-                            <!-- Başlama Tarihi Alanı -->
+                            <!-- Parola Onayı Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="CreateDate" class="form-label">Başlama Tarihi</label>
-                                <input type="date" class="form-control" id="CreateDate" name="CreateDate" required />
-                                <div class="invalid-feedback">
-                                    Lütfen doğum tarihini seçin.
-                                </div>
+                                <label>Şifre Tekrar Girin</label>
+                                <input type="password" asp-for="ConfirmPassword" class="form-control" required />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <!-- Rol Alanı -->
+                            <div class="col-md-6 mb-3">
+                                <label>Rol Seç</label>
+                                <select asp-for="SelectedRole" asp-items="@(new SelectList(ViewBag.Roles))" class="form-control">
+                                    <option value="">Seçiniz</option>
+                                </select>
+                                <span asp-validation-for="SelectedRole" class="text-danger"></span>
                             </div>
                             <!-- Açıklama Alan -->
-                            <div class="col-md-6 mb-3">
+                            @*             <div class="col-md-6 mb-3">
                                 <label for="Description" class="form-label">Açıklama</label>
                                 <textarea class="form-control" id="Description" name="Description" rows="2"></textarea>
                                 <div class="invalid-feedback">
                                     Bu alanı doldurmanız gerekmektedir.
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
 
                         <!-- Submit Butonu -->

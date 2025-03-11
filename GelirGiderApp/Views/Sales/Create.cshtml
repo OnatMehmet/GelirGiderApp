@@ -17,7 +17,7 @@
                         <div class="mb-3">
                             <label for="PatientName" class="form-label">Hasta Adı</label>
                             <input type="text" class="form-control" id="PatientName" name="PatientName" required autocomplete="off" />
-                            <input type="hidden" id="PatientId" name="PatientId"  />
+                            <input type="hidden" id="PatientId" name="PatientId" />
                         </div>
 
                         <div class="mb-3">
@@ -30,6 +30,26 @@
                                 }
                             </select>
                         </div>
+                        <!-- Kaç Ay Kullanıcak -->
+                        <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Kaç Ay Kullanıcak</label>
+                            <div class="input-group">
+                                <select asp-for="Month" name="Month" class="form-control">
+                                    <option value="">Seçiniz</option>
+
+                                    <option value=6>6 Aylık</option>
+                                    <option value=5>5 Aylık</option>
+                                    <option value=4>4 Aylık</option>
+                                    <option value=3>3 Aylık</option>
+                                    <option value=2>2 Aylık</option>
+                                    <option value=1>1 Aylık</option>
+
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen bir ürün tipi seçin.
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label for="Price" class="form-label">Fiyat</label>
@@ -40,8 +60,9 @@
                             <label for="PaymentAmount" class="form-label">Ödenen Miktar</label>
                             <input type="number" class="form-control" id="PaymentAmount" name="PaymentAmount" required />
                         </div>
-                        <!-- Kullanım Aşamaı -->
-                        <div class="mb-3">
+
+                        <!--Kullanım aşaması-->
+                    @*     <div class="mb-3">
                             <label for="ProductTypeId" class="form-label">Kullanım Aşaması</label>
                             <div class="input-group">
                                 <select asp-for="UsageStage" name="usageStage" class="form-control">
@@ -55,7 +76,7 @@
                             <div class="invalid-feedback">
                                 Lütfen bir ürün tipi seçin.
                             </div>
-                        </div>
+                        </div> *@
 
                         <div class="mb-3">
                             <label for="Description" class="form-label">Açıklama</label>

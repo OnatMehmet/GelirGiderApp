@@ -6,7 +6,7 @@ namespace GelirGiderApp.SeedData
 {
     public static class SeedData
     {
-        public static async Task Initialize(IServiceProvider serviceProvider, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        public static async Task Initialize(IServiceProvider serviceProvider, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             var roleNames = new[] { "Admin", "User", "Manager","Doctor" };
             foreach (var roleName in roleNames)
@@ -14,7 +14,7 @@ namespace GelirGiderApp.SeedData
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    var role = new ApplicationRole { Name = roleName };
+                    var role = new IdentityRole { Name = roleName };
                     await roleManager.CreateAsync(role);
                 }
             }

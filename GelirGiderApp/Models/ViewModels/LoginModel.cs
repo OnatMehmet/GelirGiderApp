@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GelirGiderApp.Models
+namespace GelirGiderApp.Models.ViewModels
 {
     public class LoginModel
     {

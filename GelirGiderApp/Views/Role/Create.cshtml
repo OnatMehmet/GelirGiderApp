@@ -2,8 +2,6 @@
     ViewData["Title"] = "Yeni Rol Ekle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model GelirGiderApp.Models.Entities.Role
-
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -13,26 +11,15 @@
                 </div>
                 <div class="card-body">
                     <!-- Form Başlangıcı -->
-                    <form method="post">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Rol Adı</label>
-                            <input type="text" class="form-control" id="Name" name="Name" required />
-                            <div class="invalid-feedback">
-                                Lütfen ürün tipi adı girin.
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Açıklama</label>
-                            <input type="text" class="form-control" id="Description" name="Description" />
-                            <div class="invalid-feedback">
-                                Lütfen ürün tipi adı girin.
-                            </div>
-                        </div>
+                    <h2>Yeni Rol Ekle</h2>
 
-                        <!-- Submit Butonu -->
-                        <div class="d-grid gap-2">
-                            <button type="submit" id="saveProductType" class="btn btn-success btn-lg">Kaydet</button>
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label for="roleName" class="form-label">Rol Adı</label>
+                            <input type="text" class="form-control" name="roleName" required>
                         </div>
+                        <button type="submit" class="btn btn-primary">Ekle</button>
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
                     </form>
                 </div>
             </div>

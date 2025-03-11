@@ -1,5 +1,5 @@
-﻿using GelirGiderApp.Models;
-using GelirGiderApp.Models.Entities;
+﻿using GelirGiderApp.Models.Entities;
+using GelirGiderApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,123 +9,142 @@ using System.Security.Claims;
 
 namespace GelirGiderApp.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserController(ApplicationDbContext context)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        // Kullanıcı listesi
-        public IActionResult Index()
+        // Kullanıcıları Listeleme
+        public async Task<IActionResult> Index()
         {
-            var users = _context.Users.Include(u => u.Role).ToList();
+            var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
 
-        // Yeni kullanıcı ekleme
+
+        [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Roles = _context.Roles.ToList();  // Rolleri dropdown list olarak göster
+            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
             return View();
         }
 
+        //Kullsını Kayıt Sayfası
         [HttpPost]
-        public IActionResult Create(User user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RegisterModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                //user.CreatedBy = user.Id;
-                user.CreatedDate = DateTime.UtcNow;
-                _context.Users.Add(user);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                return View(model);
             }
-            ViewBag.Roles = _context.Roles.ToList();
-            return View(user);
+
+            var user = new ApplicationUser
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserName = model.UserName,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+               
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                if (model.Roles != null && model.Roles.Any())
+                {
+                    foreach (var role in model.Roles)
+                    {
+                        if (await _roleManager.RoleExistsAsync(role))
+                        {
+                            await _userManager.AddToRoleAsync(user, role);
+                        }
+                    }
+                
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View(model);
         }
 
-        // Kullanıcı düzenleme
-        public IActionResult Edit(Guid id)
+
+        // Kullanıcı Düzenleme Sayfası
+        public async Task<IActionResult> Edit(string id)
         {
-            var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Id == id);
+            if (id == null) return NotFound();
+
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
-            ViewBag.Roles = _context.Roles.ToList();
-            return View(user);
-        }
 
-        [HttpPost]
-        public IActionResult Edit(User user)
-        {
-            if (ModelState.IsValid)
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var model = new EditUserModel
             {
-                //user.UpdatedBy = user.Id;
-                _context.Users.Update(user);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Roles = _context.Roles.ToList();
-            return View(user);
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Roles = roles,
+                SelectedRole = userRoles.FirstOrDefault()
+            };
+
+            return View(model);
         }
 
-        // GET: user/Delete/5
+        // Kullanıcı Güncelleme İşlemi
         [HttpPost]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Edit(EditUserModel model)
         {
+            if (!ModelState.IsValid) return View(model);
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return Json(new { success = false, message = "Kullanıcı bulunamadı!" });
-            }
-            user.IsActive = false;
-            user.IsDeleted = true;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return Json(new { success = true, message = "Kullanıcı Silme işlemi başarıyla silindi!" });
-        }
-        private string GetUsernameFromToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-            var username = jsonToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
-            return username;
-        }
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null) return NotFound();
 
-        [HttpPost]
-        public IActionResult UpdateProfile(UserProfileViewModel model)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == model.Id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            // Ad Soyad güncelleme
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
 
-            //Aynı Şifre Onayı
+            var userRoles = await _userManager.GetRolesAsync(user);
+            if (userRoles.Any()) await _userManager.RemoveFromRolesAsync(user, userRoles);
 
-            if (model.NewPassword != model.ConfirmPassword)
+            if (!string.IsNullOrEmpty(model.SelectedRole))
             {
-                ViewBag.ConfirmErrorMessage = "Şifreler Uyuşmuyor!";
-                return RedirectToAction("Profile");
-            }
-            // Şifre değiştirme
-            if (!string.IsNullOrEmpty(model.NewPassword) && model.NewPassword == model.ConfirmPassword)
-            {
-                user.Password = model.NewPassword; // Şifre hashleme yapman gerekir!
+                await _userManager.AddToRoleAsync(user, model.SelectedRole);
             }
 
-            _context.SaveChanges();
+            await _userManager.UpdateAsync(user);
+            return RedirectToAction(nameof(Index));
+        }
 
-            TempData["SuccessMessage"] = "Profil başarıyla güncellendi!";
-            return RedirectToAction("Profile");
+        // Kullanıcı Silme İşlemi
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
         }
     }
+
+
 
 }

@@ -1,38 +1,34 @@
-﻿@model IEnumerable<GelirGiderApp.Models.Entities.Role>
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityRole>
 @{
     ViewData["Title"] = "Rol Listesi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Rolleri Yönet</h2>
 <br />
-<p>
-    <a href="@Url.Action("Create", "Role")" class="btn btn-primary">Yeni Rol Ekle</a>
-</p>
-<table id="rolesTable" class="display">
-    <thead>
-        <tr>
-            <th>Rol</th>
-            <th>Kayıt Tarihi</th>
-            <th>Açıklama</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var role in Model)
-        {
-            <tr>
-                <td>@role.Name</td>
-                <td>@role.CreatedDate.ToShortDateString()</td>
-                <td>@role.Description</td>
-                <td>
-                    <a href="@Url.Action("Edit", "Role", new { id = role.Id })" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
-                    <button class="btn btn-danger btn-sm" onclisck="rolesSil('@role.Id', '@role.Name')"><i class="fa fa-trash"></i></button>
-                </td>
+<div class="container mt-4">
+    @*  <h5>Roller</h5> *@
+    <a asp-action="Create" class="btn btn-success mb-3">Yeni Rol Ekle</a>
 
+    <table id="rolesTable" class="display">
+        <thead>
+            <tr>
+                <th>Rol Adı</th>
+                <th>İşlemler</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                        <button class="btn btn-danger btn-sm" onclick="rolesSil('@role.Id', '@role.Name')"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <!-- DataTables Kütüphanesi -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">

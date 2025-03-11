@@ -1,52 +1,85 @@
 ﻿
 @using GelirGiderApp.Models
+@using GelirGiderApp.Models.ViewModels
 @model UserProfileViewModel
 @{
     ViewData["Title"] = "Profilim";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white text-center">
-            <h4>Profilim</h4>
-        </div>
-        <div class="card-body">
-            <form asp-action="UpdateProfile" method="post">
-                <input type="hidden" asp-for="Id" />
+@{
+    ViewData["Title"] = "Profilim";
+}
 
-                <div class="mb-3">
-                    <label class="form-label">Ad</label>
-                    <input asp-for="FirstName" class="form-control" />
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Profilim</h4>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Soyad</label>
-                    <input asp-for="LastName" class="form-control" />
+                <div class="card-body">
+                    <!-- Tablar Başlangıcı -->
+                    <ul class="nav nav-tabs" id="profileTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="personal-info-tab" data-bs-toggle="tab" href="#personal-info" role="tab" aria-controls="personal-info" aria-selected="true">Kişisel Bilgiler</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="change-password-tab" data-bs-toggle="tab" href="#change-password" role="tab" aria-controls="change-password" aria-selected="false">Şifre Değiştir</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="profileTabContent">
+                        <!-- Kişisel Bilgiler Tabı -->
+                        <div class="tab-pane fade show active" id="personal-info" role="tabpanel" aria-labelledby="personal-info-tab">
+                            <form method="post" asp-action="UpdateProfile" class="mt-3">
+                                @* Kişisel bilgiler formu *@
+                                <div class="mb-3">
+                                    <label for="UserName" class="form-label">Kullanıcı Adı</label>
+                                    <input type="text" class="form-control" id="UserName" name="UserName" value="@Model.UserName" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="FirstName" class="form-label">Ad</label>
+                                    <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="LastName" class="form-label">Soyad</label>
+                                    <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="PhoneNumber" class="form-label">Telefon</label>
+                                    <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="Email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-success btn-lg">Bilgileri Güncelle</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
+                            <form method="post" asp-action="ChangePassword" class="mt-3">
+                                @* Şifre değişikliği formu *@
+                                <div class="mb-3">
+                                    <label for="NewPassword" class="form-label">Yeni Şifre</label>
+                                    <input type="password" class="form-control" id="NewPassword" name="NewPassword" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ConfirmPassword" class="form-label">Yeni Şifreyi Tekrar Girin</label>
+                                    <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required />
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-warning btn-lg">Şifreyi Değiştir</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <!-- Tablar Sonu -->
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">E-posta</label>
-                    <input asp-for="Email" class="form-control" readonly />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Rol</label>
-                    <input asp-for="Role" class="form-control" readonly />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Yeni Şifre</label>
-                    <input asp-for="NewPassword" type="password" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Yeni Şifre (Tekrar)</label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
-                </div>
-                <button type="submit" class="btn btn-success">Profili Güncelle</button>
-            </form>
-            @if (ViewBag.ConfirmErrorMessage != null)
-            {
-                <div class="alert alert-danger mt-3 text-center">
-                    <i class="bi bi-exclamation-triangle"></i> @ViewBag.ConfirmErrorMessage
-                </div>
-            }
+            </div>
         </div>
     </div>
 </div>

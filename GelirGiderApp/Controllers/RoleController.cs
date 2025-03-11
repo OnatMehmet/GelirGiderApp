@@ -1,77 +1,90 @@
 ﻿using GelirGiderApp.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GelirGiderApp.Controllers
 {
-   // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")] // Sadece Admin yetkisi olanlar erişebilir
     public class RoleController : Controller
     {
-        private readonly ApplicationDbContext _context;
+       private readonly RoleManager<IdentityRole> _roleManager;
+      
 
-        public RoleController(ApplicationDbContext context)
+        public RoleController(RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
+            _roleManager = roleManager;
         }
 
-        // Rol listesi
+        // ROL LİSTESİNİ GÖRÜNTÜLEME
         public IActionResult Index()
         {
-            var roles = _context.Roles.ToList();
+            var roles = _roleManager.Roles.ToList();
             return View(roles);
         }
 
-        // Yeni rol ekleme
+        // YENİ ROL EKLEME (GET)
         public IActionResult Create()
         {
             return View();
         }
 
+        // YENİ ROL EKLEME (POST)
         [HttpPost]
-        public IActionResult Create(Role role)
+        public async Task<IActionResult> Create(string roleName)
         {
-            if (ModelState.IsValid)
+            if (!string.IsNullOrEmpty(roleName))
             {
-                role.CreatedDate = DateTime.UtcNow;
-                _context.Roles.Add(role);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                var roleExists = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExists)
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(roleName));
+                    return RedirectToAction("Index");
+                }
+                ModelState.AddModelError("", "Bu rol zaten mevcut.");
             }
-            return View(role);
+            return View();
         }
 
-        // Rol düzenleme
-        public IActionResult Edit(Guid id)
+        // ROL GÜNCELLEME (GET)
+        public async Task<IActionResult> Edit(string id)
         {
-            var role = _context.Roles.FirstOrDefault(r => r.Id == id);
+            var role = await _roleManager.FindByIdAsync(id);
             if (role == null) return NotFound();
             return View(role);
         }
 
+        // ROL GÜNCELLEME (POST)
         [HttpPost]
-        public IActionResult Edit(Role role)
+        public async Task<IActionResult> Edit(string id, string name)
         {
-            if (ModelState.IsValid)
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(name))
             {
-                _context.Roles.Update(role);
-                _context.SaveChanges();
+                role.Name = name;
+                await _roleManager.UpdateAsync(role);
                 return RedirectToAction("Index");
             }
+            ModelState.AddModelError("", "Rol ismi boş olamaz.");
             return View(role);
         }
 
-        // Rol silme
-        public IActionResult Delete(Guid id)
+        // ROL SİLME
+        public async Task<IActionResult> Delete(string id)
         {
-            var role = _context.Roles.FirstOrDefault(r => r.Id == id);
-            if (role == null) return NotFound();
-
-            role.IsDeleted = true;
-            role.IsActive = false;
-            _context.Roles.Update(role);
-            //_context.Roles.Remove(role);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return Json(new { success = false });
+            }
+            await _roleManager.DeleteAsync(role);
+            return Json(new { success = true });
+            //return RedirectToAction("Index");
         }
     }
 }

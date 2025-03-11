@@ -1,9 +1,10 @@
-﻿@{
+﻿@using GelirGiderApp.Models.ViewModels
+@{
     ViewData["Title"] = "Kullanıcı Düzenle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model GelirGiderApp.Models.Entities.User
+@model EditUserModel
 
 <div class="container mt-4">
     <div class="row justify-content-center">
@@ -21,55 +22,54 @@
                             <label asp-for="FirstName" class="form-label">Ad</label>
                             <input asp-for="FirstName" class="form-control" required />
                         </div>
-
+                        <!--Soyad-->
                         <div class="form-group mb-3">
                             <label asp-for="LastName" class="form-label">Soyad</label>
                             <input asp-for="LastName" class="form-control" required />
                         </div>
+
+                        <!-- Kullanıcı Adı Alanı -->
+                        <div class="form-group mb-3">
+                            <label asp-for="UserName" class="form-label">Kullanıcı Adı</label>
+                            <input asp-for="UserName" class="form-control" required />
+                        </div>
                         <!-- Email Alanı -->
                         <div class="form-group mb-3">
                             <label asp-for="Email" class="form-label">Email</label>
-                            <input asp-for="Email" class="form-control" required />
+                            <input type="email" asp-for="Email" class="form-control" required />
                         </div>
-
-                        <!-- Adres Alanı -->
+                        <!-- Telefon Alanı -->
                         <div class="form-group mb-3">
-                            <label asp-for="Username" class="form-label">Kullanıcı Adı</label>
-                            <input asp-for="Username" class="form-control" required />
+                            <label asp-for="PhoneNumber" class="form-label">Telefon</label>
+                            <input type="tel" asp-for="PhoneNumber" class="form-control" required />
                         </div>
-
                         <!-- Parola -->
                         <div class="form-group mb-3">
                             <label asp-for="Password" class="form-label">Parola</label>
                             <input asp-for="Password" class="form-control" type="password"  required />
+                        </div>                       
+                        <!-- Parola -->
+                        <div class="form-group mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Parola Tekrar</label>
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" required />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
 
                         <!-- Rol -->
                         <div class="mb-3">
-                            <label for="ProductTypeId" class="form-label">Kullanıcı Rolü</label>
-                            <div class="input-group">
-                                <select asp-for="RoleId" class="form-control" required>
-                                    <option value="">Seçiniz...</option>
-                                    @foreach (var type in ViewBag.Roles)
-                                    {
-                                        <option value="@type.Id" selected="@(Model.RoleId == type.Id ? "selected" : null)">
-                                            @type.Name
-                                        </option>
-                                    }
-                                </select>
-@*                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductTypeModal">
-                                    Yeni Ekle
-                                </button> *@
-                            </div>
+                            <label>Rol Seç</label>
+                            <select asp-for="SelectedRole" asp-items="@(new SelectList(Model.Roles))" class="form-control">
+                                <option value="">Rol Seç</option>
+                            </select>
                             <div class="invalid-feedback">
                                 Lütfen bir ürün tipi seçin.
                             </div>
                         </div>
                         <!-- Açıklama -->
-                        <div class="form-group mb-3">
+                 @*        <div class="form-group mb-3">
                             <label asp-for="Description" class="form-label">Açıklama</label>
                             <input asp-for="Description" class="form-control" />
-                        </div>
+                        </div> *@
 
                         <!-- Butonlar -->
                         <div class="d-flex justify-content-between">

@@ -14,27 +14,29 @@ namespace GelirGiderApp.Models.Entities
 
         public Patient? Patient { get; set; }
         public Product?  Product { get; set; }
+        public int Month { get; set; }
 
         //Kullanım Aşaması
-
         public ProductUsageStage UsageStage { get; set; } = ProductUsageStage.Gaita;
     }
     public enum ProductUsageStage
     {
         [Description("Gaita Analizi")]
         Gaita = 0,
-        [Description("1.Ay")]
+        [Description("1 Aylık")]
         BirinciAy = 1,
-        [Description("2.Ay")]
+        [Description("2 Aylık")]
         IkinciAy = 2,
-        [Description("3.Ay")]
+        [Description("3 Aylık")]
         UcuncuAy = 3,
-        [Description("4.Ay")]
+        [Description("4 Aylık")]
         DorduncuAy = 4,
-        [Description("5.Ay")]
+        [Description("5 Aylık")]
         BesinciAy = 5,
-        [Description("6.Ay")]
-        Tamamlandi = 6
+        [Description("6 Aylık")]
+        AltinciAy = 6,
+        [Description("Tamamlandı")]
+        Tamamlandi = 7
     }
 
 }

@@ -23,6 +23,7 @@ namespace GelirGiderApp.Controllers
         }
 
         // GET: product/Create
+        [HttpGet]
         public IActionResult  Create()
         {// Ürün tiplerini veritabanından çek
          var productTypes =  _context.ProductTypes.ToList();
@@ -117,10 +118,37 @@ namespace GelirGiderApp.Controllers
             return Json(new { success = true, message = "Ürün başarıyla silindi!" });
         }
 
-        private bool ProductExists(Guid id)
-        {
-            return _context.Products.Any(e => e.Id == id);
+        // GET: product/Create
+        [HttpGet]
+        public IActionResult ProductPricing()
+        {// Ürün tiplerini veritabanından çek
+            var productTypes = _context.ProductTypes.ToList();
+            // View'a veri gönder
+            ViewBag.ProductTypes = productTypes;
+            return View();
         }
+
+        // POST: product/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductPricing(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                // Ürün tipi ID boş mu?
+                if (product.ProductTypeId == Guid.Empty)
+                {
+                    ModelState.AddModelError("", "Ürün tipi seçmelisiniz.");
+                    ViewBag.ProductTypes = _context.ProductTypes.ToList(); // Dropdown için tekrar yükle
+                    return View(product);
+                }
+                _context.Add(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index)); // Ürünler listesine yönlendirme
+            }
+            return View(product);
+        }
+
     }
 }
 

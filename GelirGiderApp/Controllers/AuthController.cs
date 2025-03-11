@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using GelirGiderApp.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Security.Claims;
 using GelirGiderApp.Models.Entities;
 using System.Net;
+using GelirGiderApp.Models.ViewModels;
 
 namespace GelirGiderApp.Controllers
 {

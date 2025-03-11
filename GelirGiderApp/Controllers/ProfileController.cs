@@ -1,12 +1,12 @@
 ﻿using GelirGiderApp.Models;
 using GelirGiderApp.Models.Entities;
+using GelirGiderApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GelirGiderApp.Controllers
 {
-    [Authorize]
     public class ProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

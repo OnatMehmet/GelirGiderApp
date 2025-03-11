@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GelirGiderApp.Models.Entities.User>
+﻿@model List<GelirGiderApp.Models.Entities.ApplicationUser>
 
 @{
     ViewData["Title"] = "Kullanıcılar";
@@ -12,12 +12,12 @@
     <thead>
         <tr>
             <th>Kullanıcı Adı Soyadı</th>
-            <th>Rol</th>
             <th>Email</th>
             <th>Kullanıcı Adı</th>
-            <th>Şifre</th>
+            <th>Telefon</th>
+@*             <th>Şifre</th>
             <th>Kayıt Tarihi</th>
-            <th>Açıklama</th>
+            <th>Açıklama</th> *@
             <th>İşlemler</th>
         </tr>
     </thead>
@@ -26,15 +26,16 @@
         {
             <tr>
                 <td>@user.FirstName @user.LastName</td>
-                <td>@user.Role.Name</td>
                 <td>@user.Email</td>
-                <td>@user.Username</td>
-                <td>******</td>
+                <td>@user.UserName</td>
+                <td>@user.PhoneNumber</td>
+@*                 <td>******</td>
                 <td>@user.CreatedDate.ToShortDateString()</td>
-                <td>@user.Description</td>
+                <td>@user.Description</td> *@
                 <td>
                     <a href="@Url.Action("Edit", "User", new { id = user.Id })" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
-                    <button class="btn btn-danger btn-sm" onclick="userSil('@user.Id', '@user.Username')"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-danger btn-sm" onclick="userSil('@user.Id', '@user.UserName')"><i class="fa fa-trash"></i></button>
+                    @* <a href="@Url.Action("AssignRole", "User", new { id = user.Id })" class="btn btn-primary">Rol Ata</a> *@
                 </td>
 
             </tr>

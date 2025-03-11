@@ -1,7 +1,10 @@
-﻿using GelirGiderApp.Models;
-using GelirGiderApp.Models.Entities;
+﻿using GelirGiderApp.Models.Entities;
+using GelirGiderApp.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 [Route("Account")]
 public class AccountController : Controller
@@ -24,18 +27,39 @@ public class AccountController : Controller
     public async Task<IActionResult> Login( LoginModel model)
     {
 
-        var user = await _userManager.FindByNameAsync(model.UserName);
-        if (user != null)
+        if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-            if (result.Succeeded)
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                //return Ok(new { message = "Giriş başarılı!" });
+                var roles = await _userManager.GetRolesAsync(user);
+                var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role)); // Rolleri ekle
+                }
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true
+                };
+
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,
+                    new ClaimsPrincipal(claimsIdentity), authProperties);
+
+
                 return RedirectToAction("Index", "Home");
             }
         }
-        TempData["ErrorMessage"] = "Giriş Bilgileri Geçersiz!!";
-        return View(); //Unauthorized(new { message = "Geçersiz giriş bilgileri!" });
+
+        ModelState.AddModelError("", "Geçersiz giriş denemesi.");
+        return View(model);
     }
 
 
@@ -66,9 +90,7 @@ public class AccountController : Controller
         return View();
         //return BadRequest(new { message = "Kayıt başarısız!" });
     }
-    [HttpPost("Logout")]
-    [ValidateAntiForgeryToken]
-   // [HttpGet("Logout")]
+    [HttpGet("Logout")]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
@@ -88,4 +110,42 @@ public class AccountController : Controller
     {
         return Unauthorized(new { message = "Yetkisiz erişim!" });
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Şifreyi değiştiriyoruz, eski şifre kontrolüne gerek yok.
+            var result = await _userManager.RemovePasswordAsync(user);  // Eski şifreyi kaldırıyoruz.
+            if (result.Succeeded)
+            {
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);  // Yeni şifreyi ekliyoruz.
+                if (addPasswordResult.Succeeded)
+                {
+                    return RedirectToAction("Profile");
+                }
+                foreach (var error in addPasswordResult.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+        }
+        return View(model);
+    }
+
 }

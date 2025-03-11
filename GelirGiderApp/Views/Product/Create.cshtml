@@ -16,6 +16,22 @@
                     <!-- Form Başlangıcı -->
                     <form method="post" class="needs-validation" novalidate>
                         <div class="mb-3">
+                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
+                            <div class="input-group">
+                                <select class="form-control" id="ProductTypeId" name="ProductTypeId" required>
+                                    <option value="">Ürün Tipi Seçin</option>
+                                    @foreach (var item in ViewBag.ProductTypes as List<GelirGiderApp.Models.Entities.ProductType>)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addProductTypeModal">Yeni Ürün Tipi Ekle</button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Lütfen ürün tipini girin.
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label for="Name" class="form-label">Ürün Adı</label>
                             <input type="text" class="form-control" id="Name" name="Name" required />
                             <div class="invalid-feedback">
@@ -45,22 +61,7 @@
                                 Lütfen maliyet girin.
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="ProductTypeId" class="form-label">Ürün Tipi</label>
-                            <div class="input-group">
-                                <select class="form-control" id="ProductTypeId" name="ProductTypeId" required>
-                                    <option value="">Ürün Tipi Seçin</option>
-                                    @foreach (var item in ViewBag.ProductTypes as List<GelirGiderApp.Models.Entities.ProductType>)
-                                    {
-                                        <option value="@item.Id">@item.Name</option>
-                                    }
-                                </select>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addProductTypeModal">Yeni Ürün Tipi Ekle</button>
-                            </div>
-                            <div class="invalid-feedback">
-                                Lütfen ürün tipini girin.
-                            </div>
-                        </div>
+
                         <div class="mb-3">
                             <label for="Description" class="form-label">Açıklama</label>
                             <input type="text" class="form-control" id="Description" name="Description" required />

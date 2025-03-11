@@ -1,5 +1,7 @@
 using GelirGiderApp.Models;
+using GelirGiderApp.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,13 +12,15 @@ namespace GelirGiderApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userName = User.Identity.Name; // Giriþ yapan kullanýcýnýn adýný al
             //return Ok(new { message = $"Hoþgeldin {userName}" });
@@ -26,12 +30,6 @@ namespace GelirGiderApp.Controllers
             }
             else
             {
-                //Guid userRoleId = _context.Users.FirstOrDefault(x => x.Username == userName).RoleId;
-
-                //var userRole = _context.Roles.FirstOrDefault(x => x.Id == userRoleId).Name;
-                ViewBag.Username = userName;
-                ViewBag.userRole = "Admin";//userRole;
-
                 ViewBag.TotalPatients = _context.Patients.Where(x => x.IsActive).Count();
                 ViewBag.TotalProducts = _context.Products.Where(x => x.IsActive).Count();
                 ViewBag.TotalIncome = _context.Sales.Where(x => x.IsActive).Sum(s => s.PaymentAmount);

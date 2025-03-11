@@ -1,8 +1,9 @@
 ﻿using GelirGiderApp.Models.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
@@ -26,6 +27,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+
+        modelBuilder.Entity<ApplicationUser>(entity =>
+        {
+            entity.Property(e => e.FirstName).HasColumnName("FirstName");
+            entity.Property(e => e.LastName).HasColumnName("LastName");
+        });
 
         // Rolleri ekleyelim: Admin ve Doktor
         modelBuilder.Entity<Role>().HasData(
