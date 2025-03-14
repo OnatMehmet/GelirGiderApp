@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GelirGiderApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250312112825_mg13-AddedPricesProp")]
+    partial class mg13AddedPricesProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,11 +45,13 @@ namespace GelirGiderApp.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("FirstName");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("LastName");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -285,58 +290,6 @@ namespace GelirGiderApp.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.PatientProduct", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UsageStage")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductTypeId");
-
-                    b.ToTable("PatientProduct");
-                });
-
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Payment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -393,8 +346,7 @@ namespace GelirGiderApp.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
@@ -416,8 +368,7 @@ namespace GelirGiderApp.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProductTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -450,9 +401,6 @@ namespace GelirGiderApp.Migrations
                     b.Property<decimal>("AnalysisPurchasePrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("AnalysisSalesPrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -471,13 +419,9 @@ namespace GelirGiderApp.Migrations
                     b.Property<decimal>("MonthlyPurchasePrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MonthlySalesPrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -528,12 +472,21 @@ namespace GelirGiderApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4f6993da-06eb-44e6-9811-59d185ba2e08"),
+                            Id = new Guid("0ecea1bf-7b92-4d3d-9fbc-dde7e6f1febe"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin",
-                            UpdatedDate = new DateTime(2025, 3, 13, 14, 3, 6, 574, DateTimeKind.Utc).AddTicks(6856)
+                            UpdatedDate = new DateTime(2025, 3, 12, 11, 28, 24, 861, DateTimeKind.Utc).AddTicks(9056)
+                        },
+                        new
+                        {
+                            Id = new Guid("7b803751-6727-424a-b0b5-7cc7f5284bbd"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Doctor",
+                            UpdatedDate = new DateTime(2025, 3, 12, 11, 28, 24, 861, DateTimeKind.Utc).AddTicks(9060)
                         });
                 });
 
@@ -823,33 +776,6 @@ namespace GelirGiderApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.PatientProduct", b =>
-                {
-                    b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
-                        .WithMany("PatientProducts")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GelirGiderApp.Models.Entities.Product", "Product")
-                        .WithMany("PatientProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("GelirGiderApp.Models.Entities.ProductType", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductType");
-                });
-
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Payment", b =>
                 {
                     b.HasOne("GelirGiderApp.Models.Entities.Patient", "Patient")
@@ -872,7 +798,7 @@ namespace GelirGiderApp.Migrations
             modelBuilder.Entity("GelirGiderApp.Models.Entities.Product", b =>
                 {
                     b.HasOne("GelirGiderApp.Models.Entities.ProductType", "ProductType")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -969,21 +895,9 @@ namespace GelirGiderApp.Migrations
 
                     b.Navigation("Notes");
 
-                    b.Navigation("PatientProducts");
-
                     b.Navigation("Payments");
 
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.Product", b =>
-                {
-                    b.Navigation("PatientProducts");
-                });
-
-            modelBuilder.Entity("GelirGiderApp.Models.Entities.ProductType", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

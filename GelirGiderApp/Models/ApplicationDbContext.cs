@@ -1,4 +1,5 @@
-﻿using GelirGiderApp.Models.Entities;
+﻿using GelirGiderApp.Models.Configurations;
+using GelirGiderApp.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -23,40 +24,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Files> Files { get; set; }
     public DbSet<Diagnosis> Diagnoses { get; set; }
+    public DbSet<UserPermission> UserPermissions { get; set; }
+    public DbSet<Page> Pages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.ApplyConfiguration(new ProductTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new PatientProductConfiguration());
+
         base.OnModelCreating(modelBuilder);
 
 
-        modelBuilder.Entity<ApplicationUser>(entity =>
-        {
-            entity.Property(e => e.FirstName).HasColumnName("FirstName");
-            entity.Property(e => e.LastName).HasColumnName("LastName");
-        });
+        //modelBuilder.Entity<ApplicationUser>(entity =>
+        //{
+        //    entity.Property(e => e.FirstName).HasColumnName("FirstName");
+        //    entity.Property(e => e.LastName).HasColumnName("LastName");
+        //});
 
-        // Rolleri ekleyelim: Admin ve Doktor
+
+        // Rolleri ekleyelim: Admin
         modelBuilder.Entity<Role>().HasData(
-            new Role { Id = Guid.NewGuid(), Name = "Admin" },
-            new Role { Id = Guid.NewGuid(), Name = "Doctor" }
+            new Role { Id = Guid.NewGuid(), Name = "Admin" }
         );
-        // Dosya ile ilgili konfigürasyonlar
-        modelBuilder.Entity<Files>()
-            .HasOne(f => f.Patient)
-            .WithMany(p => p.Files)
-            .HasForeignKey(f => f.PatientId)
-            .OnDelete(DeleteBehavior.Cascade);  // Hasta silindiğinde dosyalar da silinsin
-
-        // Tanı ile ilgili konfigürasyonlar
-        modelBuilder.Entity<Diagnosis>()
-            .HasOne(d => d.Patient)
-            .WithMany(p => p.Diagnoses)
-            .HasForeignKey(d => d.PatientId)
-            .OnDelete(DeleteBehavior.Cascade);  // Hasta silindiğinde tanılar da silinsin
-
-        //Code Alanı benzersiz olsun
-        modelBuilder.Entity<Product>()
-            .HasIndex(p => p.Code).IsUnique();
     }
     public override int SaveChanges()
     {

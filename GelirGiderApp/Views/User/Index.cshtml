@@ -1,4 +1,5 @@
-﻿@model List<GelirGiderApp.Models.Entities.ApplicationUser>
+﻿@model List<GelirGiderApp.Models.ViewModels.UserProfileViewModel>
+
 
 @{
     ViewData["Title"] = "Kullanıcılar";
@@ -8,16 +9,15 @@
 <p>
     <a href="@Url.Action("Create", "User")" class="btn btn-primary">Yeni Kullanıcı Ekle</a>
 </p>
+<h2>Kullanıcılar</h2>
 <table id="usersTable" class="display">
     <thead>
         <tr>
-            <th>Kullanıcı Adı Soyadı</th>
-            <th>Email</th>
+            <th>Ad Soyad</th>
             <th>Kullanıcı Adı</th>
+            <th>Email</th>
             <th>Telefon</th>
-@*             <th>Şifre</th>
-            <th>Kayıt Tarihi</th>
-            <th>Açıklama</th> *@
+            <th>Rol</th>
             <th>İşlemler</th>
         </tr>
     </thead>
@@ -25,28 +25,24 @@
         @foreach (var user in Model)
         {
             <tr>
-                <td>@user.FirstName @user.LastName</td>
-                <td>@user.Email</td>
+                <td>@user.FirstName  @user.LastName</td>
                 <td>@user.UserName</td>
+                <td>@user.Email</td>
                 <td>@user.PhoneNumber</td>
-@*                 <td>******</td>
-                <td>@user.CreatedDate.ToShortDateString()</td>
-                <td>@user.Description</td> *@
+                <td><span class="badge bg-info">@user.Role</span></td>
                 <td>
-                    <a href="@Url.Action("Edit", "User", new { id = user.Id })" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
-                    <button class="btn btn-danger btn-sm" onclick="userSil('@user.Id', '@user.UserName')"><i class="fa fa-trash"></i></button>
-                    @* <a href="@Url.Action("AssignRole", "User", new { id = user.Id })" class="btn btn-primary">Rol Ata</a> *@
+                    <a href="@Url.Action("Edit", "User", new { id = user.Id })" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i></a>
+                    <form asp-action="Delete" asp-controller="User" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i></button>
+                    </form>
                 </td>
-
             </tr>
         }
     </tbody>
 </table>
 
-<!-- DataTables Kütüphanesi -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
 <script>
     $(document).ready(function () {
         $('#usersTable').DataTable({

@@ -32,11 +32,9 @@
                         </div>
                         <!-- Kaç Ay Kullanıcak -->
                         <div class="mb-3">
-                            <label for="ProductTypeId" class="form-label">Kaç Ay Kullanıcak</label>
+                            <label for="Month" class="form-label">Kaç Ay Kullanıcak</label>
                             <div class="input-group">
-                                <select asp-for="Month" name="Month" class="form-control">
-                                    <option value="">Seçiniz</option>
-
+                                <select asp-for="Month" name="Month" id="UsageMonths" class="form-control">
                                     <option value=6>6 Aylık</option>
                                     <option value=5>5 Aylık</option>
                                     <option value=4>4 Aylık</option>
@@ -131,11 +129,48 @@
             });
 
             // Ürün seçildiğinde fiyat bilgisini otomatik doldur
-            $("#ProductId").change(function () {
-                var selectedPrice = $("#ProductId option:selected").data("price");
-                console.log(selectedPrice);
-                $("#Price").val(parseInt(selectedPrice));
+     
+                  function calculatePrice() {
+            var productId = $("#ProductId").val();
+            var usageMonths = parseInt($("#UsageMonths").val()) || 0; // Seçim yoksa 0 olarak kabul et
+
+            if (!productId || productId === "") {
+                console.warn("Ürün seçilmedi!");
+                return;
+            }
+
+            $.ajax({
+                url: "/Product/GetProductDetails",
+                type: "GET",
+                data: { productId: productId },
+                success: function (data) {
+                    console.log(data.AnalysisPurchasePrice);
+                    console.log(data.MonthlyPurchasePrice);
+
+                    console.log(data);
+                    if (data && typeof data.MonthlyPurchasePrice !== "undefined" && typeof data.AnalysisPurchasePrice !== "undefined") {
+                        var MonthlyPurchasePrice = parseFloat(data.MonthlyPurchasePrice) || 0;
+                        var AnalysisPurchasePrice = parseFloat(data.AnalysisPurchasePrice) || 0;
+
+                        var calculatedPrice = (MonthlyPurchasePrice * usageMonths) + AnalysisPurchasePrice;
+                        $("#Price").val(calculatedPrice.toFixed(2)); // Ondalık hassasiyeti koru
+                    } else {
+                        console.error("API'den geçersiz veri döndü: ", data);
+                        $("#Price").val(""); // Hata durumunda fiyatı temizle
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ürün bilgisi alınırken hata oluştu: ", error);
+                    $("#Price").val(""); // Hata durumunda fiyatı temizle
+                }
             });
+        }
+
+        // Ürün veya kullanım süresi değiştiğinde fiyatı hesapla
+        $("#ProductId, #UsageMonths").change(calculatePrice);
+
+
+
         });
     </script>
 }

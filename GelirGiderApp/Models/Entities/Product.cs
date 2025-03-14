@@ -9,5 +9,6 @@
         public decimal SalePrice { get; set; }  // Ürün satış fiyatı
         public Guid ProductTypeId { get; set; }  // Ürün tipi ID'si (Foreign Key)
         public ProductType? ProductType { get; set; }  // Ürün tipi ile ilişki
+        public ICollection<PatientProduct> PatientProducts { get; set; }
     }
 }

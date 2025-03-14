@@ -17,7 +17,7 @@ namespace GelirGiderApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var productTypes =  await _context.ProductTypes.Where(x=>x.IsActive).ToListAsync();
+            var productTypes = await _context.ProductTypes.Where(x => x.IsActive).ToListAsync();
             return View(productTypes);
         }
         // GET: product/Create
@@ -26,9 +26,9 @@ namespace GelirGiderApp.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(string name, string description, bool modal)
+        public async Task<IActionResult> Create(ProductType model)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(model.Name))
             {
                 return Json(new { success = false });
             }
@@ -36,28 +36,31 @@ namespace GelirGiderApp.Controllers
             // Yeni ürün tipi oluştur
             var newProductType = new ProductType
             {
-                Name = name,
-                Description = description
+                Name = model.Name,
+                MonthlyPurchasePrice = model.MonthlyPurchasePrice,
+                AnalysisPurchasePrice = model.AnalysisPurchasePrice,
+                Description = model.Description
             };
 
             // Veritabanına kaydet
             _context.ProductTypes.Add(newProductType);
             await _context.SaveChangesAsync();
 
-            if (modal)
-            {
-          // Başarılı olursa ID'yi döndür
-            return Json(new { success = true, id = newProductType.Id });
-            }
-            else
-            {
-            TempData["SuccessMessage"] = "Hasta başarıyla eklendi!";
-            return RedirectToAction(nameof(Index));
-            }
-             
-  
+            //  if (modal)
+            //  {
+            //// Başarılı olursa ID'yi döndür
+            //  return Json(new { success = true, id = newProductType.Id });
+            //  }
+            //  else
+            //  {
 
-            
+            //  }
+            TempData["SuccessMessage"] = "Ürün Tipi başarıyla eklendi!";
+            return RedirectToAction(nameof(Index));
+
+
+
+
         }
 
         // Ürün tipini düzenleme sayfasına yönlendir
@@ -88,7 +91,8 @@ namespace GelirGiderApp.Controllers
 
             // Ürünj Tipi bilgilerini güncelle
             productType.Name = model.Name;
-
+            productType.MonthlyPurchasePrice = model.MonthlyPurchasePrice;
+            productType.AnalysisPurchasePrice = model.AnalysisPurchasePrice;
             productType.Description = model.Description;
 
             _context.SaveChanges();

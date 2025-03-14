@@ -31,8 +31,9 @@ namespace GelirGiderApp.Controllers
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+
             };
 
             return View(model);

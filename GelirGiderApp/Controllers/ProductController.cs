@@ -149,6 +149,24 @@ namespace GelirGiderApp.Controllers
             return View(product);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetProductDetails(Guid productId)
+        {
+            var product = await _context.Products
+                .Include(p => p.ProductType) // Ürün tipi bilgilerini de al
+                .FirstOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null)
+                return NotFound();
+
+            return Json(new
+            {
+                MonthlyPurchasePrice = product.ProductType.MonthlyPurchasePrice, // Aylık kullanım fiyatı
+                AnalysisPurchasePrice = product.ProductType.AnalysisPurchasePrice // Analiz fiyatı
+            });
+        }
+
+
     }
 }
 

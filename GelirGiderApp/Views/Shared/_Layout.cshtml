@@ -106,38 +106,38 @@
                     </div>
                 </li>
                 <!-- User Management -->
-                @if (User.IsInRole("Admin"))
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" href="#usersSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="usersSubmenu">
-                            <i class="bi bi-person-plus"></i> Kullanıcı Yönetimi <i class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <div class="collapse" id="usersSubmenu">
-                            <ul class="nav flex-column px-2">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Create", "User")">
-                                        <i class="bi bi-plus-circle"></i> Yeni Kullanıcı Ekle
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Index", "User")">
-                                        <i class="bi bi-list"></i> Kullanıcı Listesi
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Create", "Role")">
-                                        <i class="fa-brands fa-critical-role"></i> Yeni Rol Ekle
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Action("Index", "Role")">
-                                        <i class="bi bi-list"></i> Rol Listesi
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                }
+                @*                 @if (User.IsInRole("Admin"))
+                { *@
+                <li class="nav-item">
+                    <a class="nav-link" href="#usersSubmenu" data-bs-toggle="collapse" aria-expanded="false" aria-controls="usersSubmenu">
+                        <i class="bi bi-person-plus"></i> Kullanıcı Yönetimi <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <div class="collapse" id="usersSubmenu">
+                        <ul class="nav flex-column px-2">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "User")">
+                                    <i class="bi bi-plus-circle"></i> Yeni Kullanıcı Ekle
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "User")">
+                                    <i class="bi bi-list"></i> Kullanıcı Listesi
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "Role")">
+                                    <i class="fa-brands fa-critical-role"></i> Yeni Rol Ekle
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Role")">
+                                    <i class="bi bi-list"></i> Rol Listesi
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                @* } *@
             </ul>
         </div>
 

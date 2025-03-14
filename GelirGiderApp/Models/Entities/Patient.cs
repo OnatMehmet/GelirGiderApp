@@ -24,6 +24,7 @@ namespace GelirGiderApp.Models.Entities
         public virtual ICollection<Payment>? Payments { get; set; }
         public ICollection<Files>? Files { get; set; }  // Hastanın Dosyaları
         public ICollection<Diagnosis>? Diagnoses { get; set; }  // Hastanın Tanıları
+        public ICollection<PatientProduct> PatientProducts { get; set; } //Hasta Ürünleri
 
     }
 }

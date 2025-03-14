@@ -7,85 +7,94 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    <h5>Yeni Kullanıcı Ekle</h5>
-                </div>
                 <div class="card-body">
                     <!-- Form Başlangıcı -->
-                    <form method="post" class="needs-validation" novalidate>
+                    <form method="post" class="needs-validation p-4 shadow-lg rounded bg-light" id="registerForm" novalidate>
+                        <h4 class="mb-4 text-center text-primary"><i class="bi bi-person-plus"></i> Yeni Kullanıcı Kaydı</h4>
+
                         <div class="row">
-                            <!-- Kullanıcı Ad Alanı -->
+                            <!-- Ad -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Kullanıcı Adı</label>
-                                <input type="text" class="form-control" asp-for="UserName" required />
-                                <span asp-validation-for="UserName" class="text-danger"></span>
-                            </div>
-                            <!--Ad Alanı -->
-                            <div class="col-md-6 mb-3">
-                                <label>Ad</label>
-                                <input type="text" asp-for="FirstName" class="form-control" required />
-                                <span asp-validation-for="FirstName" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <!-- Soyad Alanı -->
-                            <div class="col-md-6 mb-3">
-                                <label>Soyad</label>
-                                <input type="text" asp-for="LastName" class="form-control" required />
-                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                <label for="FirstName" class="form-label">Ad</label>
+                                <input type="text" class="form-control" id="FirstName" name="FirstName" required minlength="2" />
+                                <div class="invalid-feedback">Lütfen en az 2 karakter uzunluğunda bir ad girin.</div>
                             </div>
 
-                            <!-- Email Alanı -->
+                            <!-- Soyad -->
                             <div class="col-md-6 mb-3">
-                                <label>Email</label>
-                                <input type="email" asp-for="Email" class="form-control" required />
-                                <span asp-validation-for="Email" class="text-danger"></span>
+                                <label for="LastName" class="form-label">Soyad</label>
+                                <input type="text" class="form-control" id="LastName" name="LastName" required minlength="2" />
+                                <div class="invalid-feedback">Lütfen en az 2 karakter uzunluğunda bir soyad girin.</div>
                             </div>
                         </div>
+
                         <div class="row">
-                            <!-- Telefon Alanı -->
+                            <!-- Kullanıcı Adı -->
                             <div class="col-md-6 mb-3">
-                                <label>Telefon Numarası</label>
-                                <input type="text" asp-for="PhoneNumber" class="form-control" required />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                <label for="UserName" class="form-label">Kullanıcı Adı</label>
+                                   <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" class="form-control" id="UserName" name="UserName" required minlength="3" />
+                                    <div class="invalid-feedback">Lütfen en az 3 karakter uzunluğunda bir kullanıcı adı girin.</div>
+                                   </div>           
                             </div>
 
-                            <!--Parola -->
+                            <!-- Email -->
                             <div class="col-md-6 mb-3">
-                                <label>Şifre</label>
-                                <input type="password" asp-for="Password" class="form-control" required />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="row">
-
-                            <!-- Parola Onayı Alanı -->
-                            <div class="col-md-6 mb-3">
-                                <label>Şifre Tekrar Girin</label>
-                                <input type="password" asp-for="ConfirmPassword" class="form-control" required />
-                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                            </div>
-                            <!-- Rol Alanı -->
-                            <div class="col-md-6 mb-3">
-                                <label>Rol Seç</label>
-                                <select asp-for="SelectedRole" asp-items="@(new SelectList(ViewBag.Roles))" class="form-control">
-                                    <option value="">Seçiniz</option>
-                                </select>
-                                <span asp-validation-for="SelectedRole" class="text-danger"></span>
-                            </div>
-                            <!-- Açıklama Alan -->
-                            @*             <div class="col-md-6 mb-3">
-                                <label for="Description" class="form-label">Açıklama</label>
-                                <textarea class="form-control" id="Description" name="Description" rows="2"></textarea>
-                                <div class="invalid-feedback">
-                                    Bu alanı doldurmanız gerekmektedir.
+                                <label for="Email" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+                                    <input type="email" class="form-control" id="Email" name="Email" required />
+                                    <div class="invalid-feedback">Lütfen geçerli bir email adresi girin.</div>
                                 </div>
-                            </div> *@
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Telefon Numarası -->
+                            <div class="col-md-6 mb-3">
+                                <label for="PhoneNumber" class="form-label">Telefon Numarası</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" placeholder="5XX XXX XXXX" required pattern="^[5-9]{1}\d{9}$" maxlength="10" />
+                                    <div class="invalid-feedback">Lütfen geçerli bir telefon numarası girin (10 haneli, 5XX XXX XXXX formatında).</div>
+                                </div>
+                            </div>
+
+                            <!-- Rol -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Role" class="form-label">Rol</label>
+                                <select asp-for="SelectedRole" class="form-control">
+                                    <option value="">Seçiniz</option>
+                                    @foreach (var role in ViewBag.Roles as List<string>)
+                                    {
+                                        <option value="@role">@role</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback">Lütfen bir rol seçin.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Şifre -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Password" class="form-label">Şifre</label>
+                                <input type="password" class="form-control" id="Password" name="Password" minlength="4" required />
+                                <div class="invalid-feedback">En az 4 karakter uzunluğunda şifre giriniz</div>
+                            </div>
+
+                            <!-- Şifre Tekrar -->
+                            <div class="col-md-6 mb-3">
+                                <label for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
+                                <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required />
+                                @* <div class="invalid-feedback">Şifre Tekrarı Girin </div> *@
+                                <div class="invalid-feedback" id="passwordMismatch">Şifreler eşleşmiyor!</div>
+                            </div>
                         </div>
 
                         <!-- Submit Butonu -->
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">Kullanıcı Ekle</button>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-save"></i> Kayıt Ol</button>
                         </div>
                     </form>
                 </div>
@@ -94,22 +103,37 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        // Bootstrap form validation
+<script>
+        $(document).ready(function () {
+        // Şifre ve Şifre Tekrar Kontrolü
+        $("#ConfirmPassword, #Password").on("input", function () {
+            let password = $("#Password").val();
+            let confirmPassword = $("#ConfirmPassword").val();
+
+            if (password !== confirmPassword) {
+                $("#passwordMismatch").text("Şifreler eşleşmiyor!").show();
+                $("#ConfirmPassword").addClass("is-invalid");
+            } else {
+                $("#passwordMismatch").hide();
+                $("#ConfirmPassword").removeClass("is-invalid").addClass("is-valid");
+            }
+        });
+
+        // Bootstrap Form Doğrulama
         (function () {
             'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-}
+            var forms = document.querySelectorAll('.needs-validation');
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    });
+
+</script>

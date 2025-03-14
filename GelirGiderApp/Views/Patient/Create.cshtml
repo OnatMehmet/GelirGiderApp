@@ -8,29 +8,30 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4>Yeni Hasta Ekle</h4>
-                </div>
                 <div class="card-body">
                     <!-- Form Başlangıcı  novalidate-->
-                    <form method="post" class="needs-validation"  id="hastaForm">
+                    <form method="post" class="needs-validation p-4 shadow-lg rounded bg-light" id="hastaForm" novalidate>
+                        <h4 class="mb-4 text-center text-primary"><i class="bi bi-person-plus"></i> Yeni Hasta Kaydı</h4>
                         <div class="row">
                             <!-- Ad Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="Name" class="form-label">Ad</label>
-                                <input type="text" class="form-control" id="Name" name="Name" min-length ="3" required  />
-                                <div class="invalid-feedback">
-                                    Lütfen adı girin.
+                                <label for="Name" class="form-label">Hasta Adı</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control" id="Name" name="Name" minlength="3" required />
+                                    <div class="invalid-feedback">Lütfen en az 3 karakter uzunluğunda bir isim girin.</div>
                                 </div>
+
                             </div>
 
                             <!-- Telefon Alanı -->
                             <div class="col-md-6 mb-3">
-                                <label for="PhoneNumber" class="form-label">Telefon</label>
-                                <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" pattern="^\d{10}$" required />
-                              <div class="invalid-feedback">
-                                    Lütfen geçerli bir telefon numarası girin (10 haneli).
-                                </div>       
+                                <label for="PhoneNumber" class="form-label">Telefon Numarası</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" placeholder="(5XX) XXX-XXXX" required maxlength="10" />
+                                    <div class="invalid-feedback">Lütfen geçerli bir telefon numarası girin (5XX XXX XXXX).</div>
+                                </div>
                             </div>
                         </div>
 
@@ -38,120 +39,135 @@
                             <!-- Email Alanı -->
                             <div class="col-md-6 mb-3">
                                 <label for="Email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="Email" name="Email" />
-                                <div class="invalid-feedback">
-                                    Lütfen geçerli bir email adresi girin.
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control" id="Email" name="Email" placeholder="example@mail.com" required />
+                                    <div class="invalid-feedback">Lütfen geçerli bir email adresi girin.</div>
                                 </div>
                             </div>
 
                             <!-- Adres Alanı -->
                             <div class="col-md-6 mb-3">
                                 <label for="Address" class="form-label">Adres</label>
-                                <input type="text" class="form-control" id="Address" name="Address" required />
-                                <div class="invalid-feedback">
-                                    Lütfen adresi girin.
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                                    <input type="text" class="form-control" id="Address" name="Address" required />
+                                    <div class="invalid-feedback">Lütfen adresi girin.</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-@*                             <!-- Doğum Tarihi Alanı -->
-                            <div class="col-md-6 mb-3">
-                                <label for="DogumTarihi" class="form-label">Doğum Tarihi</label>
-                                <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required />
-                                <div class="invalid-feedback">
-                                    Lütfen doğum tarihini seçin.
-                                </div>
-                            </div> *@
-
                             <!-- Başlama Tarihi Alanı -->
                             <div class="col-md-6 mb-3">
                                 <label for="StartDate" class="form-label">Başlama Tarihi</label>
                                 <input type="date" class="form-control" id="StartDate" name="StartDate" required />
-                                <div class="invalid-feedback">
-                                    Lütfen doğum tarihini seçin.
-                                </div>
+                                <div class="invalid-feedback">Lütfen başlama tarihini seçin.</div>
                             </div>
-                            <!-- Açıklama Alan -->
+
+                            <!-- Açıklama Alanı -->
                             <div class="col-md-6 mb-3">
                                 <label for="Description" class="form-label">Açıklama</label>
                                 <textarea class="form-control" id="Description" name="Description" rows="2"></textarea>
-                                <div class="invalid-feedback">
-                                    Bu alanı doldurmanız gerekmektedir.
-                                </div>
+                                <div class="invalid-feedback">Bu alanı doldurmanız gerekmektedir.</div>
                             </div>
                         </div>
 
                         <!-- Submit Butonu -->
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">Hasta Ekle</button>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-save"></i> Hasta Ekle</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@section Scripts {
-    <script>
-        $(document).ready(function () {
 
-              // İsim alanı için minimum 3 karakter kontrolü
-               $("#Name").on("input", function () {
-                   var name = $(this).val();
-                   if (name.length < 3) {
-                       $("#nameError").text("İsim en az 3 karakter olmalıdır.");
-                   } else {
-                       $("#nameError").text("");
-                   }
+    @section Scripts {
+        <script>
+               $(document).ready(function () {
+
+                     // İsim alanı için minimum 3 karakter kontrolü
+                      $("#Name").on("input", function () {
+                          var name = $(this).val();
+                          if (name.length < 3) {
+                              $("#nameError").text("İsim en az 3 karakter olmalıdır.");
+                          } else {
+                              $("#nameError").text("");
+                          }
+                      });
+                    // Telefon giriş maskesi (5XX) XXX-XXXX
+                    $("#PhoneNumber").mask("(500) 000-0000");
+
+                    // İlk karakterin 0 olmasını engelle
+                    $("#PhoneNumber").on("input", function() {
+                        let value = $(this).val().replace(/\D/g, ''); // Sadece rakamları al
+                        if (value.startsWith("0")) {
+                            $(this).val(""); // Eğer ilk karakter 0 ise inputu temizle
+                            alert("Telefon numarası 0 ile başlayamaz!");
+                        }
+                    });
+
+                    // Bootstrap form doğrulama
+                    (function () {
+                        'use strict';
+                        var forms = document.querySelectorAll('.needs-validation');
+                        Array.prototype.slice.call(forms).forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                                form.classList.add('was-validated');
+                            }, false);
+                        });
+                    })();
+                   // Form submit olayı
+                   $("#hastaForm").on("submit", function (event) {
+                       event.preventDefault();
+                       $.ajax({
+                           url: '/Patient/Create',
+                           type: 'POST',
+                           data: $("#hastaForm").serialize(),
+                           success: function (response) {
+                               if (response.success) {
+                                   Swal.fire({
+                                       icon: 'success',
+                                       title: 'Başarılı!',
+                                       text: response.message,
+                                       confirmButtonColor: '#28a745',
+                                       confirmButtonText: 'Tamam'
+                                   }).then(() => {
+                                       window.location.href = '/Patient/Index';
+                                   });
+                               } else {
+                                   Swal.fire({
+                                       icon: 'error',
+                                       title: 'Hata!',
+                                       text: response.message,
+                                       confirmButtonColor: '#d33',
+                                       confirmButtonText: 'Tamam'
+                                   });
+                               }
+                           }
+                       });
+                   });
                });
 
-            // Form submit olayı
-            $("#hastaForm").on("submit", function (event) {
-                event.preventDefault();
-                $.ajax({
-                    url: '/Patient/Create',
-                    type: 'POST',
-                    data: $("#hastaForm").serialize(),
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Başarılı!',
-                                text: response.message,
-                                confirmButtonColor: '#28a745',
-                                confirmButtonText: 'Tamam'
-                            }).then(() => {
-                                window.location.href = '/Patient/Index';
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Hata!',
-                                text: response.message,
-                                confirmButtonColor: '#d33',
-                                confirmButtonText: 'Tamam'
-                            });
-                        }
-                    }
-                });
-            });
-        });
-
-     // Bootstrap form validation
-        (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-}
+            // Bootstrap form validation
+               (function () {
+                   'use strict'
+                   var forms = document.querySelectorAll('.needs-validation')
+                   Array.prototype.slice.call(forms)
+                       .forEach(function (form) {
+                           form.addEventListener('submit', function (event) {
+                               if (!form.checkValidity()) {
+                                   event.preventDefault()
+                                   event.stopPropagation()
+                               }
+                               form.classList.add('was-validated')
+                           }, false)
+                       })
+               })()
+        </script>
+    }

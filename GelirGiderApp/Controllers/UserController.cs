@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace GelirGiderApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
+  // [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -25,15 +26,33 @@ namespace GelirGiderApp.Controllers
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
-            return View(users);
+            var userList = new List<UserProfileViewModel>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user); // Kullanıcının rollerini al
+                userList.Add(new UserProfileViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = roles.FirstOrDefault() ?? "Rol Yok" // Eğer rol yoksa "Rol Yok" yazdır
+                });
+            }
+
+            return View(userList);
         }
 
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
-            return View();
+            var roles= _roleManager.Roles.Select(r => r.Name).ToList();
+            ViewBag.Roles = roles;  // View'a gönderiyoruz
+            return View(new RegisterModel());
         }
 
         //Kullsını Kayıt Sayfası
@@ -59,17 +78,17 @@ namespace GelirGiderApp.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                if (model.Roles != null && model.Roles.Any())
-                {
-                    foreach (var role in model.Roles)
-                    {
-                        if (await _roleManager.RoleExistsAsync(role))
+                //if (model.Roles != null && model.Roles.Any())
+                //{
+                //    foreach (var role in model.Roles)
+                //    {
+                        if (await _roleManager.RoleExistsAsync(model.SelectedRole))
                         {
-                            await _userManager.AddToRoleAsync(user, role);
+                            await _userManager.AddToRoleAsync(user, model.SelectedRole);
                         }
-                    }
+                //    }
                 
-                }
+                //}
                 return RedirectToAction(nameof(Index));
             }
 

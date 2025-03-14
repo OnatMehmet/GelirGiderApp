@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GelirGiderApp.Controllers
 {
-    [Authorize(Roles = "Admin")] // Sadece Admin yetkisi olanlar erişebilir
+    //[Authorize(Roles = "Admin")] // Sadece Admin yetkisi olanlar erişebilir
     public class RoleController : Controller
     {
        private readonly RoleManager<IdentityRole> _roleManager;
